@@ -97,5 +97,14 @@ EVENTS = [
         "role": "Attendee",
         "achievement": None,
         "desc": "Attended AWS Community Day 2026, a conference where industry professionals shared their experiences and insights on cloud technologies, with opportunities to connect and network with students from different schools."
+    },
+    {
+        "id": "comday",
+        "name": "AWS Community Day 2026",
+        "Location": "University of the Philippines - Cebu",
+        "date": "September 12, 2026",
+        "role": "Volunteer",
+        "achievement": None,
+        "desc": "Volunteered at AWS Community Day 2026 as an usher, assisting attendees and helping ensure the smooth flow of the event while connecting with industry professionals and students from different schools."
     }
 ]
