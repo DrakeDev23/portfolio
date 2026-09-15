@@ -16,6 +16,7 @@ const IMAGE_MAP = {
   hackathon: "/assets/images/events/hackit.jpeg",
   firewall: "/assets/images/events/firewall.jpeg",
   aws: "/assets/images/events/aws.jpeg",
+  comday: "/assets/images/events/comday.png",
 }
 
 const ACCENT = '#7A33FF'
