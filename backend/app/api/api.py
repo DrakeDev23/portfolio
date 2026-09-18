@@ -8,6 +8,7 @@ from app.api.routes.health import router as health_router
 from app.api.routes.profile import router as profile_router
 from app.api.routes.experience import router as experience_router
 from app.api.routes.certifications import router as certifications_router
+from app.api.routes.github import router as github_router
 
 
 api_router = APIRouter()
@@ -20,3 +21,4 @@ api_router.include_router(experience_router, prefix="/experience")
 api_router.include_router(certifications_router, prefix="/certifications")
 api_router.include_router(contact_router,  prefix="/contact")
 api_router.include_router(chat_router, prefix="/chat", tags=["chat"])
+api_router.include_router(github_router, prefix="/github", tags=["github"])

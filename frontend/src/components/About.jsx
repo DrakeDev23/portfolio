@@ -1,6 +1,7 @@
 import { GraduationCap, Dumbbell, Code2, BookOpen, Gamepad2 } from 'lucide-react'
 import SectionHeader from './SectionHeader'
 import GlassCard from './GlassCard'
+import GitHubContributions from './GitHubContributions'
 import useScrollReveal from '../hooks/useScrollReveal'
 
 const HOBBIES = [
@@ -112,6 +113,10 @@ export default function About() {
               ))}
             </div>
           </div>
+        </div>
+
+        <div className="mt-12 pt-10 border-t" style={{ borderColor: 'rgba(122,51,255,0.15)' }}>
+          <GitHubContributions />
         </div>
       </div>
     </section>
