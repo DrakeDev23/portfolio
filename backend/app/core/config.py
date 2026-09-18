@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     GROQ_API_KEY: str
     GROQ_MODEL: str = "openai/gpt-oss-20b"
     DATABASE_URL: str
+    GITHUB_TOKEN: str | None = None
 
     @field_validator("GROQ_MODEL")
     @classmethod
