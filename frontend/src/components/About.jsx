@@ -38,7 +38,7 @@ const FOCUS_BARS = [
 const COURSES = [
   'BSIT student',
   '2nd year Student',
-  'AWS membership Officer @ CEC',
+  'AWSSBG membership Officer @ CEC',
 ]
 
 export default function About() {
