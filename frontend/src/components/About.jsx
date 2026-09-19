@@ -39,6 +39,7 @@ const COURSES = [
   'BSIT student',
   '2nd year Student',
   'AWSSBG membership Officer @ CEC',
+  'Psite Officer @ CEC',
 ]
 
 export default function About() {
