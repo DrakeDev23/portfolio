@@ -17,6 +17,7 @@ const IMAGE_MAP = {
   firewall: "/assets/images/events/firewall.jpeg",
   aws: "/assets/images/events/aws.jpeg",
   comday: "/assets/images/events/comday.png",
+  startup: "/assets/images/events/startup.jpg",
 }
 
 const ACCENT = '#7A33FF'
