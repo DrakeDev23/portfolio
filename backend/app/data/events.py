@@ -106,5 +106,14 @@ EVENTS = [
         "role": "Volunteer",
         "achievement": None,
         "desc": "Volunteered at AWS Community Day 2026 as an usher, assisting attendees and helping ensure the smooth flow of the event while connecting with industry professionals and students from different schools."
+    },
+    {
+        "id": "startup",
+        "name": "Navigating the Asian startup landscape: Trends, Opportunities, and Founder Lessons",
+        "location": "CIT University Activity Center, Cebu City",
+        "date": "June 17, 2026",
+        "role": "Participant",
+        "achievement": None,
+        "desc": "Participated in Startup Aboard, a recurring monthly gathering held every Wednesday where aspiring founders and established founders come together to connect, share ideas, learn from one another, and explore opportunities in the startup community."
     }
 ]
