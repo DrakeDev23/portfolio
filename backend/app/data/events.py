@@ -115,5 +115,14 @@ EVENTS = [
         "role": "Participant",
         "achievement": None,
         "desc": "Participated in Startup Aboard, a recurring monthly gathering held every Wednesday where aspiring founders and established founders come together to connect, share ideas, learn from one another, and explore opportunities in the startup community."
+    },
+    {
+        "id": "AIPinas",
+        "name": "AI Pilipinas Cebu: Use Cases of AI in Real World Businesses",
+        "location": "DOST, Cebu City",
+        "date": "September 5, 2026",
+        "role": "Attendee",
+        "achievement": None,
+        "desc": "Attended AI Pilipinas Cebu, an event focused on real-world AI use cases in businesses, highlighting how artificial intelligence is being applied to improve operations, solve business challenges, and create new opportunities."
     }
 ]
