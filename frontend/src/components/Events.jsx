@@ -18,7 +18,7 @@ const IMAGE_MAP = {
   aws: "/assets/images/events/aws.jpeg",
   comday: "/assets/images/events/comday.png",
   startup: "/assets/images/events/startup.jpg",
-  AIPinas: "/assets/images/events/AIPinas.jpeg",
+  aipinas: "/assets/images/events/AIPinas.jpeg",
 }
 
 const ACCENT = '#7A33FF'
