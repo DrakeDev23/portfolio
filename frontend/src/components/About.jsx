@@ -31,7 +31,7 @@ const FOCUS_BARS = [
   { label: 'Full-Stack Development', pct: 70 },
   { label: 'Computer Networking', pct: 60 },
   { label: 'Cybersecurity', pct: 65 },
-  { label: 'Backend Development', pct: 75 },
+  { label: 'Backend Development', pct: 80 },
   { label: 'Frontend Development', pct: 80 },
 ]
 
