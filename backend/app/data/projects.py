@@ -89,4 +89,13 @@ PROJECTS = [
         "color": "#06b6d4",
         "image": "/assets/images/projects/airsiloy.png",
     },
+    {
+        "id": "hapsay",
+        "title": "Hapsay",
+        "subtitle": "Personal Task Manager",
+        "desc": "my school project a personal task management app that helps users organize their daily activities and track their progress.",
+        "tags": ["Laravel", "Blade", "TailwindCSS", "PostgreSQL", "Google 0Auth", "Resend"],
+        "color": "#06b6d4",
+        "image": "/assets/images/projects/hapsay.jpeg",
+    }
 ]
