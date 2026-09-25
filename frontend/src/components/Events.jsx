@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { MapPin, Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
+import { MapPin, Calendar, ChevronLeft, ChevronRight, Cloud } from 'lucide-react'
 import SectionHeader from './SectionHeader'
 import useScrollReveal from '../hooks/useScrollReveal'
 import { usePortfolioData } from '../context/PortfolioContext'
@@ -20,6 +20,7 @@ const IMAGE_MAP = {
   startup: "/assets/images/events/startup.jpg",
   aipinas: "/assets/images/events/AIPinas.jpeg",
   commit: "/assets/images/events/commit.jpeg",
+  Cloud: "/assets/images/events/cloud.jpeg",
 }
 
 const ACCENT = '#7A33FF'

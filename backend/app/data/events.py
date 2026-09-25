@@ -130,8 +130,17 @@ EVENTS = [
         "name": "Frontend and Backend Workshop",
         "location": "enspace, Cebu Business Park",
         "date": "September 19, 2026",
-        "role": "Attendee - Backend Team,
+        "role": "Attendee - Backend Team",
         "achievement": None,
         "desc": "Attended a hands-on workshop led by a Senior Software Engineer covering practical concepts in both frontend and backend development. The session strengthened my understanding of how different parts of an application work together, which is valuable to my focus as a Full-Stack Developer specializing in backend development."
+    },
+    {
+        "id": "cloud",
+        "name": "Into the Cloud",
+        "location": "DOST, Cebu City",
+        "date": "June 27, 2026",
+        "role": "Attendee",
+        "achievement": None,
+        "desc": "Attended Into the Cloud, an event focused on cloud computing technologies, exploring the latest trends, tools, and best practices in the cloud ecosystem."
     }
 ]
