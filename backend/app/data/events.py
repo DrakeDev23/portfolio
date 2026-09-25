@@ -124,5 +124,14 @@ EVENTS = [
         "role": "Attendee",
         "achievement": None,
         "desc": "Attended AI Pilipinas Cebu, an event focused on real-world AI use cases in businesses, highlighting how artificial intelligence is being applied to improve operations, solve business challenges, and create new opportunities."
+    },
+    {
+        "id": "commit",
+        "name": "Frontend and Backend Workshop",
+        "location": "enspace, Cebu Business Park",
+        "date": "September 19, 2026",
+        "role": "Attendee - Backend Team,
+        "achievement": None,
+        "desc": "Attended a hands-on workshop led by a Senior Software Engineer covering practical concepts in both frontend and backend development. The session strengthened my understanding of how different parts of an application work together, which is valuable to my focus as a Full-Stack Developer specializing in backend development."
     }
 ]
