@@ -142,5 +142,14 @@ EVENTS = [
         "role": "Attendee",
         "achievement": None,
         "desc": "Attended Into the Cloud, an event focused on cloud computing technologies, exploring the latest trends, tools, and best practices in the cloud ecosystem."
+    }, {
+        
+        "id": "hackforgov",
+        "name": "Capture the flag Regional Competition",
+        "location": "Maayo Hotel, Mandue",
+        "date": "October 5, 2026",
+        "role": "Participant",
+        "achievement": "Top 9",
+        "desc": "I’m grateful for the opportunity to participate in the **Capture the Flag (CTF) Regional Competition** with my team. We finished in the **Top 9**, and although we didn’t reach the podium, I’m still proud of what we were able to achieve. It was a challenging but enjoyable experience that gave us the chance to test our skills, learn from our mistakes, and experience competing alongside other student teams. Definitely an experience I’ll carry with me as I continue learning in cybersecurity."
     }
 ]
