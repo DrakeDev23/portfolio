@@ -6,6 +6,7 @@ const ROLES = [
   'Full-Stack Developer',
   'backend Focused',
   'Aspiring Cybersecurity Professional',
+  'CTF Player',
   'Co-Founder'
 ];
 

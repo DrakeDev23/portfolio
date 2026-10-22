@@ -151,5 +151,14 @@ EVENTS = [
         "role": "Participant",
         "achievement": "Top 9",
         "desc": "I’m grateful for the opportunity to participate in the **Capture the Flag (CTF) Regional Competition** with my team. We finished in the **Top 9**, and although we didn’t reach the podium, I’m still proud of what we were able to achieve. It was a challenging but enjoyable experience that gave us the chance to test our skills, learn from our mistakes, and experience competing alongside other student teams. Definitely an experience I’ll carry with me as I continue learning in cybersecurity."
+    },
+    {
+        "id": "javacapstone",
+        "name": "OOP Capstone Defense",
+        "location": "Cebu Eastern College, Cebu City",
+        "date": "October 22, 2026",
+        "role": "Presenter",
+        "achievement": None,
+        "desc": "Presented **bAI (AI Business Companion)** during our capstone defense, showcasing a Java-based desktop application designed to simplify business management through an integrated system for product and inventory management, sales tracking, report generation, and AI-assisted business insights. Built using JavaFX and PostgreSQL with a client-server architecture, bAI aims to help businesses organize their operations, manage data efficiently, and make more informed decisions through AI-powered assistance. This defense provided an opportunity to demonstrate the system's core functionalities, explain its technical implementation, and present its potential value in addressing real-world business management challenges."
     }
 ]

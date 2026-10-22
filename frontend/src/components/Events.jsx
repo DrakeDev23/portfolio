@@ -22,8 +22,9 @@ const IMAGE_MAP = {
   commit: "/assets/images/events/commit.jpeg",
   cloud: "/assets/images/events/cloud.jpeg",
   hackforgov: "/assets/images/events/hack4gov.jpeg",
+  javacapstone: "/assets/images/events/oop.jpeg",
 }
-
+  
 const ACCENT = '#7A33FF'
 const INTERVAL = 4500
 
