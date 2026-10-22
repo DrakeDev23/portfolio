@@ -97,5 +97,23 @@ PROJECTS = [
         "tags": ["Laravel", "Blade", "TailwindCSS", "PostgreSQL", "Google 0Auth", "Resend"],
         "color": "#06b6d4",
         "image": "/assets/images/projects/hapsay.jpeg",
-    }
+    },
+    {
+        "id": "bai",
+        "title": "bAI - AI Business Companion",
+        "subtitle": "Capstone Project",
+        "desc": "A Java-based desktop application designed to simplify business management through an integrated system for product and inventory management, sales tracking, report generation, and AI-assisted business insights.",
+        "tags": ["Java", "JavaFX", "PostgreSQL", "Groq", "Css"],
+        "color": "#06b6d4",
+        "image": "/assets/images/projects/bAI.jpeg",
+    },
+    {
+        "id": "hulma",
+        "title": "Hulma - AI Assisted Portfolio generator",
+        "subtitle": "Capstone Project",
+        "desc": "A web application that generates a personalized portfolio website for users based on their input and preferences, leveraging AI to review and enhance the content.",
+        "tags": ["Reactjs", "TailwindCSS", "FastAPI", "PostgreSQL", "Groq", "Docker", "Clerk", "Pydantic", "SqlAlchemy", "Supabase Storage", "CSS", "Javascript"],
+        "color": "#06b6d4",
+        "image": "/assets/images/projects/hulma.jpeg",
+    }   
 ]

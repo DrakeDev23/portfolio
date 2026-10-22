@@ -15,6 +15,8 @@ import trustpulseImg from '../assets/images/projects/trustpulse.jpeg'
 import shopscoutImg from '../assets/images/projects/shopscout.jpeg'
 import airsiloy from '../assets/images/projects/airsiloy.jpeg'
 import hapsay from '../assets/images/projects/hapsay.jpeg'
+import bai from '../assets/images/projects/bAI.jpeg'
+import hulma from '../assets/images/projects/hulma.jpeg'
 
 const IMAGE_MAP = {
   'awscc-flurry': awsImg,
@@ -28,6 +30,8 @@ const IMAGE_MAP = {
   shopscout: shopscoutImg,
   airsiloy: airsiloy,
   hapsay: hapsay,
+  bai: bai,
+  hulma: hulma,
 }
 
 const INTERVAL = 4500
