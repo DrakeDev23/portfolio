@@ -287,6 +287,22 @@ export const EVENTS_DATA = [
     date: 'October 22, 2026',
     image: '/assets/images/events/oop.jpeg',
   },
+  {
+    id: 'owasp',
+    title: 'APEX (AppSec Professionals EXchange)',
+    name: 'APEX (AppSec Professionals EXchange)',
+    badge: 'Attendee',
+    rank: 'ATTENDEE',
+    achievement: null,
+    role: 'Attendee',
+    description:
+      'APEX is a one-day conference for application security professionals and enthusiasts, exploring cutting-edge AppSec practices, vulnerability research, and modern defense strategies.',
+    desc:
+      'APEX is a one-day conference for application security professionals and enthusiasts, exploring cutting-edge AppSec practices, vulnerability research, and modern defense strategies.',
+    location: 'iACADEMY CEBU',
+    date: 'October 17, 2026',
+    image: '/assets/images/events/owasp.jpeg',
+  },
 ]
 
 export default EVENTS_DATA

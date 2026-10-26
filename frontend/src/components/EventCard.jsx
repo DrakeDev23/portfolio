@@ -52,12 +52,12 @@ export default function EventCard({
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={`relative select-none rounded-2xl overflow-hidden will-change-transform touch-manipulation w-full h-full flex flex-col transition-all duration-300 ${
+      className={`relative select-none rounded-2xl overflow-hidden will-change-transform touch-manipulation w-full h-full flex flex-col cursor-pointer border transition-colors duration-200 ${
         isHovered
-          ? 'border-2 border-purple-400 ring-2 ring-purple-400/40 shadow-[0_0_45px_rgba(168,85,247,0.55)] scale-[1.02] cursor-pointer'
+          ? 'border-purple-400 ring-2 ring-purple-400/50 shadow-[0_0_45px_rgba(168,85,247,0.55)]'
           : isActive
-          ? 'border border-purple-500/60 shadow-[0_0_50px_rgba(139,92,246,0.4)] animate-glow-pulse cursor-default'
-          : 'border border-purple-500/25 hover:border-purple-500/45 cursor-pointer'
+          ? 'border-purple-500/60 shadow-[0_0_50px_rgba(139,92,246,0.4)] animate-glow-pulse'
+          : 'border-purple-500/25 hover:border-purple-500/50'
       }`}
       style={{
         backgroundColor: '#0f0a1f', 
