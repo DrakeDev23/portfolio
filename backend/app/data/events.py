@@ -168,5 +168,13 @@ EVENTS = [
         "date": "October 17, 2026",
         "achievement": None,
         "desc": "APEX is a one day conference for applicaiton security professionals and enthusiasts"
+    },
+    {
+        "id": "hacktoberfest",
+        "name": "CEBU Hacktoberfest 2026",
+        "location": "Lyf Cebu",
+        "date": "October 25, 2026",
+        "achievement": "champion",
+        "desc": "We were crowned **Best Overall Project Champion at Cebu Hacktoberfest 2026**, an open-source hackathon where we collaborated to build an innovative project with AI integration. Through teamwork, creativity, and dedication, we developed a solution that contributes to the open-source community while showcasing how artificial intelligence can enhance software development. This achievement reflects our commitment to innovation, collaboration, and building technology that makes a difference."
     }
 ]

@@ -25,6 +25,7 @@ const IMAGE_MAP = {
   hackforgov: '/assets/images/events/hack4gov.jpeg',
   javacapstone: '/assets/images/events/oop.jpeg',
   owasp: '/assets/images/events/owasp.jpeg',
+  hacktoberfest: '/assets/images/events/hacktoberfest.jpeg'
 }
 
 export default function Events() {
