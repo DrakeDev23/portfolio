@@ -17,6 +17,7 @@ import airsiloy from '../assets/images/projects/airsiloy.jpeg'
 import hapsay from '../assets/images/projects/hapsay.jpeg'
 import bai from '../assets/images/projects/bAI.jpeg'
 import hulma from '../assets/images/projects/hulma.jpeg'
+import agentica from '../assets/images/projects/agentica.jpeg'
 
 const IMAGE_MAP = {
   'awscc-flurry': awsImg,
@@ -32,6 +33,7 @@ const IMAGE_MAP = {
   hapsay: hapsay,
   bai: bai,
   hulma: hulma,
+  agentica: agentica,
 }
 
 const INTERVAL = 4500
