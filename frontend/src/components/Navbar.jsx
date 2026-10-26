@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Menu, X, Terminal } from 'lucide-react'
 import { NAV_LINKS } from '../constants/data'
+import { usePortfolioData } from '../context/PortfolioContext'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('Home')
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const { isEventModalOpen, closeEventModal, centerCarouselOnActive } = usePortfolioData() || {}
 
   useEffect(() => {
     const onScroll = () => {
@@ -28,8 +31,21 @@ export default function Navbar() {
   }, [])
 
   const scrollTo = (id) => {
-    const el = document.getElementById(id.toLowerCase())
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
+    if (isEventModalOpen && closeEventModal) {
+      closeEventModal()
+    }
+
+    const targetId = id.toLowerCase()
+    const el = document.getElementById(targetId)
+
+    setTimeout(() => {
+      if (el) el.scrollIntoView({ behavior: 'smooth' })
+
+      if (targetId === 'events' && centerCarouselOnActive) {
+        centerCarouselOnActive()
+      }
+    }, 20)
+
     setMenuOpen(false)
   }
 

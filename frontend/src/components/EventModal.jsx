@@ -1,4 +1,5 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MapPin, Calendar, Award, Sparkles } from 'lucide-react'
 
@@ -9,30 +10,29 @@ export default function EventModal({
   currentIndex = 0,
   total = 0,
 }) {
-  const handleKeyDown = useCallback(
-    (e) => {
-      if (!isOpen) return
+  useEffect(() => {
+    if (!isOpen) return
+    const prevOverflow = document.body.style.overflow || ''
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prevOverflow === 'hidden' ? '' : prevOverflow
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    if (!isOpen) return
+    const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         e.preventDefault()
         onClose()
       }
-    },
-    [isOpen, onClose]
-  )
-
-  useEffect(() => {
-    if (isOpen) {
-      window.addEventListener('keydown', handleKeyDown)
-      const originalOverflow = document.body.style.overflow
-      document.body.style.overflow = 'hidden'
-      return () => {
-        window.removeEventListener('keydown', handleKeyDown)
-        document.body.style.overflow = originalOverflow
-      }
     }
-  }, [isOpen, handleKeyDown])
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose])
 
-  if (!event) return null
+  if (!isOpen || !event) return null
+  if (typeof document === 'undefined') return null
 
   const title = event.title || event.name || 'Untitled Event'
   const description = event.description || event.desc || ''
@@ -65,24 +65,16 @@ export default function EventModal({
     dotColor = 'bg-slate-300'
   }
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <div
           role="dialog"
           aria-modal="true"
           aria-label={title}
-          className="fixed inset-0 z-[999] flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
+          onClick={onClose}
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-3 sm:p-6 overflow-y-auto"
         >
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-[#06030e]/85 backdrop-blur-md cursor-pointer"
-          />
-
           <motion.div
             initial={{ opacity: 0, scale: 0.92, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -165,7 +157,7 @@ export default function EventModal({
                 <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-purple-300/80 mb-2">
                   About this Event
                 </h3>
-                <p className="text-sm sm:text-base text-gray-200 leading-relaxed whitespace-pre-line">
+                <p className="break-normal [overflow-wrap:break-word] leading-relaxed text-sm sm:text-base text-gray-200">
                   {description}
                 </p>
               </div>
@@ -183,6 +175,7 @@ export default function EventModal({
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }
