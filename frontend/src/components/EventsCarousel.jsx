@@ -5,7 +5,7 @@ import { EVENTS_DATA } from '../constants/eventsData'
 
 export default function EventsCarousel({
   events = EVENTS_DATA,
-  spinSpeed = 7.5, // degrees per second
+  spinSpeed = 2.5, 
   autoplay = true,
   className = '',
 }) {
@@ -23,7 +23,6 @@ export default function EventsCarousel({
   const stageRef = useRef(null)
   const ringRef = useRef(null)
 
-  // Animation & interaction refs to allow 60fps RAF loop without React re-render overhead
   const currentAngleRef = useRef(0)
   const targetAngleRef = useRef(0)
   const isAnimatingToTargetRef = useRef(false)
@@ -39,7 +38,6 @@ export default function EventsCarousel({
   const isTabHiddenRef = useRef(false)
   const reducedMotionRef = useRef(false)
 
-  // Track responsive container width
   useEffect(() => {
     if (!stageRef.current) return
     const ro = new ResizeObserver((entries) => {
@@ -75,7 +73,6 @@ export default function EventsCarousel({
     return Math.max(120, radius * Math.sin((2 * Math.PI) / total))
   }, [radius, total])
 
-  // Reduced motion preference
   useEffect(() => {
     if (typeof window === 'undefined') return
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -90,7 +87,6 @@ export default function EventsCarousel({
     return () => mediaQuery.removeEventListener?.('change', handleMotionChange)
   }, [])
 
-  // Tab visibility
   useEffect(() => {
     const handleVisibilityChange = () => {
       const isHidden = document.visibilityState === 'hidden'
@@ -103,14 +99,12 @@ export default function EventsCarousel({
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
   }, [])
 
-  // Calculate circular offset between card i and active card
   const getCircularOffset = useCallback((i, currentPos, count) => {
     let d = ((i - currentPos) % count + count) % count
     if (d > count / 2) d -= count
     return d
   }, [])
 
-  // Find shortest rotation angle to bring target card index to the front
   const getShortestTargetAngle = useCallback((targetIndex, currentAngle, cardStep, count) => {
     const fullCircle = count * cardStep
     const baseTarget = targetIndex * cardStep
@@ -118,7 +112,6 @@ export default function EventsCarousel({
     return baseTarget + k * fullCircle
   }, [])
 
-  // Navigation handlers
   const handleNext = useCallback(() => {
     const currentStep = Math.round(currentAngleRef.current / step)
     targetAngleRef.current = (currentStep + 1) * step
@@ -141,7 +134,6 @@ export default function EventsCarousel({
     isAnimatingToTargetRef.current = true
   }, [getShortestTargetAngle, step, total])
 
-  // Hover handlers on specific event cards: stops rotation on hover, resumes on leave
   const handleCardMouseEnter = useCallback((index) => {
     hoveredIndexRef.current = index
     setHoveredIndex(index)
@@ -154,7 +146,6 @@ export default function EventsCarousel({
     }
   }, [])
 
-  // Keyboard navigation
   const handleKeyDown = (e) => {
     if (e.key === 'ArrowLeft') {
       e.preventDefault()
@@ -165,7 +156,6 @@ export default function EventsCarousel({
     }
   }
 
-  // Pointer drag gestures
   const handlePointerDown = (e) => {
     if (e.button !== undefined && e.button !== 0) return
     isPointerDownRef.current = true
@@ -211,7 +201,6 @@ export default function EventsCarousel({
     }
   }
 
-  // Main 60fps RAF Animation Loop
   useEffect(() => {
     if (!total) return
 
@@ -221,9 +210,7 @@ export default function EventsCarousel({
       lastTimeRef.current = timestamp
 
       if (isDraggingRef.current) {
-        // Position directly controlled by pointer move
       } else if (isAnimatingToTargetRef.current) {
-        // Smooth ease-out interpolation toward target angle
         const diff = targetAngleRef.current - currentAngleRef.current
         if (Math.abs(diff) < 0.05) {
           currentAngleRef.current = targetAngleRef.current
@@ -238,16 +225,13 @@ export default function EventsCarousel({
         autoplay &&
         total > 1
       ) {
-        // Continuous smooth spinning! Halts when a specific event card is hovered
         currentAngleRef.current += spinSpeed * delta
       }
 
-      // Apply transform directly to GPU-accelerated 3D ring container
       if (ringRef.current) {
         ringRef.current.style.transform = `translateZ(-${radiusRef.current}px) rotateY(${-currentAngleRef.current}deg)`
       }
 
-      // Update active front-facing card index only when crossing card thresholds
       const currentStepIndex = Math.round(currentAngleRef.current / step)
       const normIndex = ((currentStepIndex % total) + total) % total
       if (normIndex !== activeIndexRef.current) {
@@ -281,7 +265,6 @@ export default function EventsCarousel({
       }}
     >
       <div className="relative w-full overflow-visible">
-        {/* Navigation Left Button */}
         <button
           type="button"
           onClick={handlePrev}
@@ -292,7 +275,6 @@ export default function EventsCarousel({
           <ChevronLeft className="w-6 h-6 text-gray-200" />
         </button>
 
-        {/* Navigation Right Button */}
         <button
           type="button"
           onClick={handleNext}
@@ -303,7 +285,6 @@ export default function EventsCarousel({
           <ChevronRight className="w-6 h-6 text-gray-200" />
         </button>
 
-        {/* 3D Carousel Stage */}
         <div
           ref={stageRef}
           onPointerDown={handlePointerDown}
@@ -320,7 +301,6 @@ export default function EventsCarousel({
         >
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-80 h-16 rounded-full bg-purple-600/35 blur-3xl pointer-events-none opacity-40 z-0" />
 
-          {/* 3D Rotating Cylinder Ring */}
           <div
             ref={ringRef}
             className="absolute left-1/2 top-1/2 w-0 h-0 will-change-transform [transform-style:preserve-3d] z-10"
@@ -351,7 +331,6 @@ export default function EventsCarousel({
                     transform: `rotateY(${cardAngle}deg) translateZ(${radius}px)`,
                   }}
                 >
-                  {/* Front Card Face */}
                   <div
                     className="absolute inset-0"
                     style={{
@@ -378,7 +357,6 @@ export default function EventsCarousel({
                     />
                   </div>
 
-                  {/* Back Card Face (Decorated Cylinder Interior) */}
                   <div
                     className="absolute inset-0 rounded-2xl border border-purple-500/25 flex flex-col items-center justify-center p-6 select-none pointer-events-none"
                     style={{
@@ -407,7 +385,6 @@ export default function EventsCarousel({
         </div>
       </div>
 
-      {/* Desktop Counter Indicator */}
       <div className="hidden md:flex justify-center mt-3 z-[200]">
         <div className="flex items-center gap-2">
           <span
@@ -423,7 +400,6 @@ export default function EventsCarousel({
         </div>
       </div>
 
-      {/* Mobile Controls */}
       <div className="flex md:hidden items-center justify-center gap-6 mt-4 z-[200]">
         <button
           type="button"

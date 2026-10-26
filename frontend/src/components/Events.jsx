@@ -134,7 +134,7 @@ export default function Events() {
         ) : (
           <EventsCarousel
             events={formattedEvents}
-            spinSpeed={7.5}
+            spinSpeed={2.5}
             autoplay={true}
           />
         )}
