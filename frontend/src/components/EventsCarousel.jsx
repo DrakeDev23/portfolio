@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import EventCard from './EventCard'
 import EventModal from './EventModal'
 import { EVENTS_DATA } from '../constants/eventsData'
+import { usePortfolioData } from '../context/PortfolioContext'
 
 export default function EventsCarousel({
   events = EVENTS_DATA,
@@ -13,11 +14,23 @@ export default function EventsCarousel({
   const total = events.length
   const step = 360 / (total || 1)
 
-  const [activeIndex, setActiveIndex] = useState(0)
+  const portfolioCtx = usePortfolioData()
+  const {
+    activeEventIndex = 0,
+    setActiveEventIndex,
+    setIsEventModalOpen,
+    closeEventModalRef,
+    centerCarouselRef,
+  } = portfolioCtx || {}
+
+  const [activeIndex, setActiveIndex] = useState(activeEventIndex || 0)
   const [hoveredIndex, setHoveredIndex] = useState(null)
   const [selectedEventIndex, setSelectedEventIndex] = useState(null)
   const [isDragging, setIsDragging] = useState(false)
   const [reducedMotion, setReducedMotion] = useState(false)
+  const [isMobile, setIsMobile] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth < 768 : false
+  })
   const [stageWidth, setStageWidth] = useState(
     typeof window !== 'undefined' ? window.innerWidth : 1200
   )
@@ -25,10 +38,15 @@ export default function EventsCarousel({
   const stageRef = useRef(null)
   const ringRef = useRef(null)
 
-  const currentAngleRef = useRef(0)
-  const targetAngleRef = useRef(0)
-  const isAnimatingToTargetRef = useRef(false)
-  const activeIndexRef = useRef(0)
+  const currentAngleRef = useRef((activeEventIndex || 0) * step)
+  const targetAngleRef = useRef((activeEventIndex || 0) * step)
+  const isAnimatingToTarget = useRef(false)
+  const activeIndexRef = useRef(activeEventIndex || 0)
+
+  useEffect(() => {
+    activeIndexRef.current = activeIndex
+  }, [activeIndex])
+
   const hoveredIndexRef = useRef(null)
   const selectedEventIndexRef = useRef(null)
   selectedEventIndexRef.current = selectedEventIndex
@@ -43,26 +61,34 @@ export default function EventsCarousel({
   const isTabHiddenRef = useRef(false)
   const reducedMotionRef = useRef(false)
 
+  const touchStartXRef = useRef(null)
+  const touchEndXRef = useRef(null)
+
   useEffect(() => {
-    if (!stageRef.current) return
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.contentRect.width > 0) {
-          setStageWidth(entry.contentRect.width)
-        }
-      }
-    })
-    ro.observe(stageRef.current)
-    return () => ro.disconnect()
+    if (typeof window === 'undefined') return
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      setStageWidth(window.innerWidth)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  const isMobile = stageWidth < 768
-  const cardW = Math.round(
-    isMobile
-      ? Math.min(300, Math.max(220, stageWidth * 0.66))
-      : Math.min(340, Math.max(240, stageWidth * 0.34))
-  )
-  const cardH = Math.round(cardW * (isMobile ? 1.3 : 1.15))
+  useEffect(() => {
+    if (activeEventIndex !== undefined && activeEventIndex !== activeIndexRef.current) {
+      setActiveIndex(activeEventIndex)
+      activeIndexRef.current = activeEventIndex
+      if (!isMobile) {
+        currentAngleRef.current = activeEventIndex * step
+        targetAngleRef.current = activeEventIndex * step
+      }
+    }
+  }, [activeEventIndex, isMobile, step])
+
+  const cardW = Math.min(340, Math.max(240, stageWidth * 0.34))
+  const cardH = Math.round(cardW * 1.15)
   const stageHeight = cardH + 140
 
   const radius = useMemo(() => {
@@ -117,32 +143,84 @@ export default function EventsCarousel({
     return baseTarget + k * fullCircle
   }, [])
 
-  const handleNext = useCallback(() => {
-    const currentStep = Math.round(currentAngleRef.current / step)
-    targetAngleRef.current = (currentStep + 1) * step
-    isAnimatingToTargetRef.current = true
-  }, [step])
-
-  const handlePrev = useCallback(() => {
-    const currentStep = Math.round(currentAngleRef.current / step)
-    targetAngleRef.current = (currentStep - 1) * step
-    isAnimatingToTargetRef.current = true
-  }, [step])
-
-  const handleCardClick = useCallback((targetIndex) => {
+  const centerCarouselOnActive = useCallback(() => {
+    const targetIdx = activeIndexRef.current
+    if (isMobile) {
+      setActiveIndex(targetIdx)
+      return
+    }
     targetAngleRef.current = getShortestTargetAngle(
-      targetIndex,
+      targetIdx,
       currentAngleRef.current,
       step,
       total
     )
-    isAnimatingToTargetRef.current = true
+    isAnimatingToTarget.current = true
+  }, [getShortestTargetAngle, step, total, isMobile])
+
+  useEffect(() => {
+    if (centerCarouselRef) {
+      centerCarouselRef.current = centerCarouselOnActive
+    }
+  }, [centerCarouselRef, centerCarouselOnActive])
+
+  const handleNext = useCallback(() => {
+    if (isMobile) {
+      const next = (activeIndexRef.current + 1) % total
+      activeIndexRef.current = next
+      setActiveIndex(next)
+      if (setActiveEventIndex) setActiveEventIndex(next)
+      return
+    }
+    const currentStep = Math.round(currentAngleRef.current / step)
+    targetAngleRef.current = (currentStep + 1) * step
+    isAnimatingToTarget.current = true
+  }, [step, isMobile, total, setActiveEventIndex])
+
+  const handlePrev = useCallback(() => {
+    if (isMobile) {
+      const next = (activeIndexRef.current - 1 + total) % total
+      activeIndexRef.current = next
+      setActiveIndex(next)
+      if (setActiveEventIndex) setActiveEventIndex(next)
+      return
+    }
+    const currentStep = Math.round(currentAngleRef.current / step)
+    targetAngleRef.current = (currentStep - 1) * step
+    isAnimatingToTarget.current = true
+  }, [step, isMobile, total, setActiveEventIndex])
+
+  const handleCardClick = useCallback((targetIndex) => {
+    if (!isMobile) {
+      targetAngleRef.current = getShortestTargetAngle(
+        targetIndex,
+        currentAngleRef.current,
+        step,
+        total
+      )
+      isAnimatingToTarget.current = true
+    }
     setSelectedEventIndex(targetIndex)
-  }, [getShortestTargetAngle, step, total])
+    if (setActiveEventIndex) {
+      setActiveEventIndex(targetIndex)
+    }
+    if (setIsEventModalOpen) {
+      setIsEventModalOpen(true)
+    }
+  }, [getShortestTargetAngle, step, total, isMobile, setActiveEventIndex, setIsEventModalOpen])
 
   const handleModalClose = useCallback(() => {
     setSelectedEventIndex(null)
-  }, [])
+    if (setIsEventModalOpen) {
+      setIsEventModalOpen(false)
+    }
+  }, [setIsEventModalOpen])
+
+  useEffect(() => {
+    if (closeEventModalRef) {
+      closeEventModalRef.current = handleModalClose
+    }
+  }, [closeEventModalRef, handleModalClose])
 
   const handleCardMouseEnter = useCallback((index) => {
     hoveredIndexRef.current = index
@@ -173,7 +251,7 @@ export default function EventsCarousel({
     hasMovedRef.current = false
     dragStartXRef.current = e.clientX
     dragStartAngleRef.current = currentAngleRef.current
-    isAnimatingToTargetRef.current = false
+    isAnimatingToTarget.current = false
   }
 
   const handlePointerMove = (e) => {
@@ -208,12 +286,34 @@ export default function EventsCarousel({
       isDraggingRef.current = false
       const currentStep = Math.round(currentAngleRef.current / step)
       targetAngleRef.current = currentStep * step
-      isAnimatingToTargetRef.current = true
+      isAnimatingToTarget.current = true
     }
   }
 
+  const handleTouchStart = (e) => {
+    touchStartXRef.current = e.targetTouches[0].clientX
+    touchEndXRef.current = null
+  }
+
+  const handleTouchMove = (e) => {
+    touchEndXRef.current = e.targetTouches[0].clientX
+  }
+
+  const handleTouchEnd = () => {
+    if (touchStartXRef.current === null || touchEndXRef.current === null) return
+    const diff = touchStartXRef.current - touchEndXRef.current
+    const minSwipeDistance = 40
+    if (diff > minSwipeDistance) {
+      handleNext()
+    } else if (diff < -minSwipeDistance) {
+      handlePrev()
+    }
+    touchStartXRef.current = null
+    touchEndXRef.current = null
+  }
+
   useEffect(() => {
-    if (!total) return
+    if (!total || isMobile) return
 
     const animate = (timestamp) => {
       if (!lastTimeRef.current) lastTimeRef.current = timestamp
@@ -221,11 +321,11 @@ export default function EventsCarousel({
       lastTimeRef.current = timestamp
 
       if (isDraggingRef.current) {
-      } else if (isAnimatingToTargetRef.current) {
+      } else if (isAnimatingToTarget.current) {
         const diff = targetAngleRef.current - currentAngleRef.current
         if (Math.abs(diff) < 0.05) {
           currentAngleRef.current = targetAngleRef.current
-          isAnimatingToTargetRef.current = false
+          isAnimatingToTarget.current = false
         } else {
           currentAngleRef.current += diff * Math.min(delta * 9, 0.25)
         }
@@ -249,6 +349,9 @@ export default function EventsCarousel({
       if (normIndex !== activeIndexRef.current) {
         activeIndexRef.current = normIndex
         setActiveIndex(normIndex)
+        if (setActiveEventIndex) {
+          setActiveEventIndex(normIndex)
+        }
       }
 
       rafIdRef.current = requestAnimationFrame(animate)
@@ -259,7 +362,7 @@ export default function EventsCarousel({
     return () => {
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current)
     }
-  }, [total, step, spinSpeed, autoplay])
+  }, [total, step, spinSpeed, autoplay, isMobile, setActiveEventIndex])
 
   if (!total) return null
 
@@ -267,7 +370,7 @@ export default function EventsCarousel({
     <section
       role="region"
       aria-roledescription="carousel"
-      aria-label="Events and Conferences 3D Ring Carousel"
+      aria-label="Events and Conferences"
       tabIndex={0}
       onKeyDown={handleKeyDown}
       className={`relative w-full select-none outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 ${className}`}
@@ -276,13 +379,63 @@ export default function EventsCarousel({
         overflowY: 'visible',
       }}
     >
-      <div className="relative w-full overflow-visible">
+      <div className="flex md:hidden flex-col items-center w-full px-2">
+        <div
+          className="relative w-full max-w-[340px] h-[430px] rounded-2xl select-none"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="absolute inset-0 -z-10 rounded-2xl bg-purple-600/15 blur-2xl pointer-events-none" />
+
+          <div key={activeIndex} className="w-full h-full animate-fadeIn">
+            <EventCard
+              event={events[activeIndex]}
+              index={activeIndex}
+              isActive={true}
+              isHovered={false}
+              overlayOpacity={0}
+              onClick={() => handleCardClick(activeIndex)}
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center gap-6 mt-5 z-20">
+          <button
+            type="button"
+            onClick={handlePrev}
+            aria-label="Previous event slide"
+            className="h-12 w-12 rounded-full flex items-center justify-center text-white bg-[#130b29] border border-purple-500/30 hover:border-purple-400 active:scale-90 active:bg-purple-900/40 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 touch-manipulation select-none shadow-[0_0_15px_rgba(139,92,246,0.25)]"
+          >
+            <ChevronLeft className="w-6 h-6 text-purple-200" />
+          </button>
+
+          <div className="font-mono text-sm font-bold tracking-wider text-purple-300 bg-[#130b29] px-4 py-2 rounded-full border border-purple-500/25 shadow-inner">
+            <span key={activeIndex} className="inline-block animate-load-pop">
+              {String(activeIndex + 1).padStart(2, '0')}
+            </span>{' '}
+            <span className="text-purple-500/50">/</span>{' '}
+            <span className="text-gray-500">{String(total).padStart(2, '0')}</span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleNext}
+            aria-label="Next event slide"
+            className="h-12 w-12 rounded-full flex items-center justify-center text-white bg-[#130b29] border border-purple-500/30 hover:border-purple-400 active:scale-90 active:bg-purple-900/40 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 touch-manipulation select-none shadow-[0_0_15px_rgba(139,92,246,0.25)]"
+          >
+            <ChevronRight className="w-6 h-6 text-purple-200" />
+          </button>
+        </div>
+      </div>
+
+      <div className="hidden md:block relative w-full overflow-visible">
         <button
           type="button"
           onClick={handlePrev}
           onPointerDown={(e) => e.stopPropagation()}
           aria-label="Previous event card"
-          className="hidden md:flex absolute top-1/2 -translate-y-1/2 left-2 lg:left-6 h-12 w-12 rounded-full items-center justify-center text-white bg-[#130b29]/90 backdrop-blur-md border border-purple-500/30 hover:border-purple-400 hover:bg-purple-950/80 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:scale-110 active:scale-90 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 z-[200] touch-manipulation select-none disabled:opacity-40 disabled:pointer-events-none"
+          className="absolute top-1/2 -translate-y-1/2 left-2 lg:left-6 h-12 w-12 rounded-full flex items-center justify-center text-white bg-[#130b29]/90 backdrop-blur-md border border-purple-500/30 hover:border-purple-400 hover:bg-purple-950/80 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:scale-110 active:scale-90 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 z-[200] touch-manipulation select-none"
         >
           <ChevronLeft className="w-6 h-6 text-gray-200" />
         </button>
@@ -292,7 +445,7 @@ export default function EventsCarousel({
           onClick={handleNext}
           onPointerDown={(e) => e.stopPropagation()}
           aria-label="Next event card"
-          className="hidden md:flex absolute top-1/2 -translate-y-1/2 right-2 lg:right-6 h-12 w-12 rounded-full items-center justify-center text-white bg-[#130b29]/90 backdrop-blur-md border border-purple-500/30 hover:border-purple-400 hover:bg-purple-950/80 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:scale-110 active:scale-90 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 z-[200] touch-manipulation select-none disabled:opacity-40 disabled:pointer-events-none"
+          className="absolute top-1/2 -translate-y-1/2 right-2 lg:right-6 h-12 w-12 rounded-full flex items-center justify-center text-white bg-[#130b29]/90 backdrop-blur-md border border-purple-500/30 hover:border-purple-400 hover:bg-purple-950/80 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:scale-110 active:scale-90 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 z-[200] touch-manipulation select-none"
         >
           <ChevronRight className="w-6 h-6 text-gray-200" />
         </button>
@@ -395,58 +548,28 @@ export default function EventsCarousel({
             })}
           </div>
         </div>
-      </div>
 
-      <div className="hidden md:flex justify-center mt-3 z-[200]">
-        <div className="flex items-center gap-2">
-          <span
-            key={activeIndex}
-            className="inline-block font-mono text-xs sm:text-sm font-bold tracking-wider text-purple-300 animate-load-pop"
-          >
-            {String(activeIndex + 1).padStart(2, '0')}
-          </span>
-          <span className="font-mono text-xs text-purple-500/50">/</span>
-          <span className="font-mono text-xs text-gray-500">
-            {String(total).padStart(2, '0')}
-          </span>
+        <div className="flex justify-center mt-3 z-[200]">
+          <div className="flex items-center gap-2">
+            <span
+              key={activeIndex}
+              className="inline-block font-mono text-xs sm:text-sm font-bold tracking-wider text-purple-300 animate-load-pop"
+            >
+              {String(activeIndex + 1).padStart(2, '0')}
+            </span>
+            <span className="font-mono text-xs text-purple-500/50">/</span>
+            <span className="font-mono text-xs text-gray-500">
+              {String(total).padStart(2, '0')}
+            </span>
+          </div>
         </div>
-      </div>
-
-      <div className="flex md:hidden items-center justify-center gap-6 mt-4 z-[200]">
-        <button
-          type="button"
-          onClick={handlePrev}
-          onPointerDown={(e) => e.stopPropagation()}
-          aria-label="Previous event card"
-          className="h-11 w-11 rounded-full flex items-center justify-center text-white bg-[#130b29]/90 border border-purple-500/30 hover:border-purple-400 active:scale-90 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 touch-manipulation select-none shadow-[0_0_15px_rgba(139,92,246,0.25)]"
-        >
-          <ChevronLeft className="w-5 h-5 text-gray-200" />
-        </button>
-
-        <div className="font-mono text-sm font-bold tracking-wider text-purple-300">
-          <span key={activeIndex} className="inline-block animate-load-pop">
-            {String(activeIndex + 1).padStart(2, '0')}
-          </span>{' '}
-          <span className="text-purple-500/50">/</span>{' '}
-          <span className="text-gray-500">{String(total).padStart(2, '0')}</span>
-        </div>
-
-        <button
-          type="button"
-          onClick={handleNext}
-          onPointerDown={(e) => e.stopPropagation()}
-          aria-label="Next event card"
-          className="h-11 w-11 rounded-full flex items-center justify-center text-white bg-[#130b29]/90 border border-purple-500/30 hover:border-purple-400 active:scale-90 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 touch-manipulation select-none shadow-[0_0_15px_rgba(139,92,246,0.25)]"
-        >
-          <ChevronRight className="w-5 h-5 text-gray-200" />
-        </button>
       </div>
 
       <EventModal
         event={selectedEventIndex !== null ? events[selectedEventIndex] : null}
         isOpen={selectedEventIndex !== null}
         onClose={handleModalClose}
-        currentIndex={selectedEventIndex ?? 0}
+        currentIndex={selectedEventIndex ?? activeIndex}
         total={total}
       />
     </section>

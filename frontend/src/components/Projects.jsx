@@ -176,7 +176,7 @@ export default function Projects() {
           <>
             <div
               key={proj.id}
-              className="relative rounded-2xl overflow-hidden mb-3 sm:mb-4"
+              className="relative rounded-2xl overflow-hidden mb-0 md:mb-4"
               style={{
                 background: `linear-gradient(135deg, ${proj.color}18, ${proj.color}08, #130e2a)`,
                 border: `1px solid ${proj.color}30`,
@@ -331,7 +331,7 @@ export default function Projects() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3">
+            <div className="hidden md:grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3">
               {projects.map((p, i) => (
                 <button
                   key={p.id}

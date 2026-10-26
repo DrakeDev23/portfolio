@@ -105,12 +105,6 @@ export default function Events() {
       >
         <div className="mb-8 text-center md:text-left">
           <SectionHeader eyebrow="Conference Journey" title="Events & Conferences" />
-          <p className="mt-2 text-sm text-gray-400 max-w-xl">
-            <span className="md:hidden">Swipe to explore, tap any event to view full preview.</span>
-            <span className="hidden md:inline">
-              Hover to pause, click any event to view full preview, or drag to rotate through conferences and hackathons.
-            </span>
-          </p>
         </div>
 
         {loading ? (

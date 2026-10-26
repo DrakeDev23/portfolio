@@ -11,7 +11,7 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import Chatbot from './components/Chatbot'
 import LinuxBootLoader from './components/LinuxBootLoader'
-import { PortfolioContext } from './context/PortfolioContext'
+import { PortfolioContext, PortfolioProvider } from './context/PortfolioContext'
 
 const SESSION_KEY = 'portfolio_initialized'
 
@@ -46,7 +46,7 @@ export default function App() {
   }
 
   return (
-    <PortfolioContext.Provider value={portfolioData}>
+    <PortfolioProvider portfolioData={portfolioData}>
       <AnimatePresence mode="wait">
         {!booted ? (
           <LinuxBootLoader key="boot" onComplete={handleBootComplete} />
@@ -61,6 +61,6 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
-    </PortfolioContext.Provider>
+    </PortfolioProvider>
   )
 }
