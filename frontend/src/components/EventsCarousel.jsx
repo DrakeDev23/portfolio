@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import EventCard from './EventCard'
+import EventModal from './EventModal'
 import { EVENTS_DATA } from '../constants/eventsData'
 
 export default function EventsCarousel({
@@ -14,6 +15,7 @@ export default function EventsCarousel({
 
   const [activeIndex, setActiveIndex] = useState(0)
   const [hoveredIndex, setHoveredIndex] = useState(null)
+  const [selectedEventIndex, setSelectedEventIndex] = useState(null)
   const [isDragging, setIsDragging] = useState(false)
   const [reducedMotion, setReducedMotion] = useState(false)
   const [stageWidth, setStageWidth] = useState(
@@ -28,6 +30,9 @@ export default function EventsCarousel({
   const isAnimatingToTargetRef = useRef(false)
   const activeIndexRef = useRef(0)
   const hoveredIndexRef = useRef(null)
+  const selectedEventIndexRef = useRef(null)
+  selectedEventIndexRef.current = selectedEventIndex
+
   const isDraggingRef = useRef(false)
   const isPointerDownRef = useRef(false)
   const hasMovedRef = useRef(false)
@@ -132,7 +137,12 @@ export default function EventsCarousel({
       total
     )
     isAnimatingToTargetRef.current = true
+    setSelectedEventIndex(targetIndex)
   }, [getShortestTargetAngle, step, total])
+
+  const handleModalClose = useCallback(() => {
+    setSelectedEventIndex(null)
+  }, [])
 
   const handleCardMouseEnter = useCallback((index) => {
     hoveredIndexRef.current = index
@@ -147,6 +157,7 @@ export default function EventsCarousel({
   }, [])
 
   const handleKeyDown = (e) => {
+    if (selectedEventIndex !== null) return
     if (e.key === 'ArrowLeft') {
       e.preventDefault()
       handlePrev()
@@ -220,6 +231,7 @@ export default function EventsCarousel({
         }
       } else if (
         hoveredIndexRef.current === null &&
+        selectedEventIndexRef.current === null &&
         !reducedMotionRef.current &&
         !isTabHiddenRef.current &&
         autoplay &&
@@ -322,7 +334,7 @@ export default function EventsCarousel({
                   key={event.id ?? i}
                   className={`absolute will-change-transform [transform-style:preserve-3d] ${
                     isFrontFacing ? 'pointer-events-auto' : 'pointer-events-none'
-                  } ${isHovered ? 'z-30' : isActive ? 'z-20' : 'z-10'}`}
+                  }`}
                   style={{
                     left: -cardW / 2,
                     top: -cardH / 2,
@@ -429,6 +441,14 @@ export default function EventsCarousel({
           <ChevronRight className="w-5 h-5 text-gray-200" />
         </button>
       </div>
+
+      <EventModal
+        event={selectedEventIndex !== null ? events[selectedEventIndex] : null}
+        isOpen={selectedEventIndex !== null}
+        onClose={handleModalClose}
+        currentIndex={selectedEventIndex ?? 0}
+        total={total}
+      />
     </section>
   )
 }

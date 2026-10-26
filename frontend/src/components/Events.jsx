@@ -24,6 +24,7 @@ const IMAGE_MAP = {
   cloud: '/assets/images/events/cloud.jpeg',
   hackforgov: '/assets/images/events/hack4gov.jpeg',
   javacapstone: '/assets/images/events/oop.jpeg',
+  owasp: '/assets/images/events/owasp.jpeg',
 }
 
 export default function Events() {
@@ -105,9 +106,9 @@ export default function Events() {
         <div className="mb-8 text-center md:text-left">
           <SectionHeader eyebrow="Conference Journey" title="Events & Conferences" />
           <p className="mt-2 text-sm text-gray-400 max-w-xl">
-            <span className="md:hidden">Swipe to explore, tap any event to inspect.</span>
+            <span className="md:hidden">Swipe to explore, tap any event to view full preview.</span>
             <span className="hidden md:inline">
-              Hover over any event to pause and inspect, or drag to rotate through conferences, hackathons, and challenges.
+              Hover to pause, click any event to view full preview, or drag to rotate through conferences and hackathons.
             </span>
           </p>
         </div>
