@@ -72,8 +72,8 @@ const TASKS = [
 ]
 
 const STATIC_LOGS = [
-  { type: 'ok', message: 'Initializing Kernel' },
-  { type: 'ok', message: 'Loading Security Modules' },
+  { id: 'static-init-kernel', type: 'ok', message: 'Initializing Kernel' },
+  { id: 'static-load-security', type: 'ok', message: 'Loading Security Modules' },
 ]
 
 export function usePortfolioLoader() {
@@ -84,9 +84,15 @@ export function usePortfolioLoader() {
   const [data, setData] = useState({})
   const [phase, setPhase] = useState('idle')
   const ctxRef = useRef({})
+  const logCounterRef = useRef(0)
 
   const addLog = useCallback((type, message) => {
-    setLogs((prev) => [...prev, { type, message, id: `${type}-${prev.length}` }])
+    logCounterRef.current += 1
+    const id =
+      typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `log-${logCounterRef.current}-${Date.now()}`
+    setLogs((prev) => [...prev, { id, type, message }])
   }, [])
 
   const run = useCallback(async () => {

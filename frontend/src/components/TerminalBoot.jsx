@@ -45,8 +45,12 @@ export default function TerminalBoot({ logs }) {
 
       <div className="px-4 py-3 space-y-1 max-h-44 overflow-y-auto">
         <AnimatePresence initial={false}>
-          {logs.map((log) => (
-            <BootLine key={log.id} type={log.type} message={log.message} />
+          {logs.map((log, index) => (
+            <BootLine
+              key={log.id || `boot-line-${index}`}
+              type={log.type}
+              message={log.message}
+            />
           ))}
         </AnimatePresence>
       </div>
