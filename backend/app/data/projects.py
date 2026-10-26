@@ -115,5 +115,14 @@ PROJECTS = [
         "tags": ["Reactjs", "TailwindCSS", "FastAPI", "PostgreSQL", "Groq", "Docker", "Clerk", "Pydantic", "SqlAlchemy", "Supabase Storage", "CSS", "Javascript"],
         "color": "#06b6d4",
         "image": "/assets/images/projects/hulma.jpeg",
-    }   
+    },
+    {
+        "id": "agentica",
+        "title": "Agentica - AI Agent WorkSpace",
+        "subtitle": "Hacktoberfest Project",
+        "desc": "Agentica is an open-source infinite canvas for agent work, built for Hacktoberfest. Notes, model replies, terminals, and Codex sessions sit side by side, saved on your disk.",
+        "tags": ["Rust","Typescript", "Svelte", "Javascript", "Tailwindcss", "Css", "Html", "SQLite"],
+        "color": "#3b82f6",
+        "image": "/assets/images/projects/agentica.jpeg",
+    }
 ]
