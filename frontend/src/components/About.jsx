@@ -29,10 +29,10 @@ const HOBBIES = [
 
 const FOCUS_BARS = [
   { label: 'Full-Stack Development', pct: 70 },
-  { label: 'Computer Networking', pct: 60 },
-  { label: 'Cybersecurity', pct: 75 },
+  { label: 'Computer Networking', pct: 65 },
+  { label: 'Cybersecurity', pct: 79 },
   { label: 'Backend Development', pct: 80 },
-  { label: 'Frontend Development', pct: 80 },
+  { label: 'Frontend Development', pct: 75 },
 ]
 
 const COURSES = [
