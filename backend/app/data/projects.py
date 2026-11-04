@@ -124,5 +124,14 @@ PROJECTS = [
         "tags": ["Rust","Typescript", "Svelte", "Javascript", "Tailwindcss", "Css", "Html", "SQLite"],
         "color": "#3b82f6",
         "image": "/assets/images/projects/agentica.jpeg",
-    }
+    },
+    {
+        "id": "worthout",
+        "title": "Worthout - Personal Workout Tracker",
+        "subtitle": "Personal Fitness Tracking Application",
+        "desc": "Worthout is a personal fitness tracking application that helps users create and manage workout routines, record completed workout sessions, and track their fitness activities and progress. It provides a centralized space for organizing workouts and maintaining workout history.",
+        "tags": ["React Native", "Expo", "TypeScript", "Python", "FastAPI", "PostgreSQL", "SQLAlchemy", "Docker"],
+        "color": "#22c55e",
+        "image": "/assets/images/projects/worthout.jpeg",
+    },
 ]
