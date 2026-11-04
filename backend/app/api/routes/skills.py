@@ -1,12 +1,11 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter
 
-from app.db.database import get_db
-from app.db import crud
+from app.data.skills import SECURITY_TOOLS, SKILL_CATEGORIES
+from app.db.schemas import SkillsResponse
 
 router = APIRouter()
 
 
-@router.get("")
-async def get_skills(db: AsyncSession = Depends(get_db)):
-    return await crud.get_skills(db)
+@router.get("", response_model=SkillsResponse)
+async def get_skills() -> SkillsResponse:
+    return SkillsResponse(categories=SKILL_CATEGORIES, security_tools=SECURITY_TOOLS)

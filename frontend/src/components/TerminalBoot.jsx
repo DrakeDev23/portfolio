@@ -28,7 +28,6 @@ export default function TerminalBoot({ logs }) {
         border: '1px solid #2a2e34',
       }}
     >
-      {/* */}
       <div
         className="flex items-center justify-between px-3 py-1.5 border-b"
         style={{ background: '#1a1d21', borderColor: '#2a2e34' }}

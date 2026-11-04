@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Mail, MapPin, Clock, Send, CheckCircle } from 'lucide-react'
+import { Mail, MapPin, Clock, Send, CheckCircle, Download } from 'lucide-react'
 import SectionHeader from './SectionHeader'
 import GlassCard from './GlassCard'
 import useScrollReveal from '../hooks/useScrollReveal'
@@ -196,6 +196,15 @@ export default function Contact() {
                 </div>
               ))}
             </div>
+
+            <a
+              href={`${API_URL}/api/cv`}
+              download
+              className="btn-primary justify-center w-full sm:w-auto"
+            >
+              <Download size={16} />
+              Download CV
+            </a>
           </div>
 
           <GlassCard>
