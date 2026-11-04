@@ -56,10 +56,10 @@ export default function Navbar() {
         : 'bg-transparent'
         }`}
     >
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="mx-auto w-full max-w-[1400px] px-6 md:px-12 h-16 flex items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]">
         <button
           onClick={() => scrollTo('home')}
-          className="flex items-center gap-2 group"
+          className="flex items-center gap-2 group justify-self-start"
           aria-label="Scroll to top"
         >
           <div className="w-8 h-8 rounded-lg bg-[rgba(122,51,255,0.15)] border border-[rgba(122,51,255,0.3)] flex items-center justify-center group-hover:bg-[rgba(122,51,255,0.25)] transition-colors">
@@ -78,44 +78,47 @@ export default function Navbar() {
           </span>
         </button>
 
-        <nav className="hidden md:flex items-center gap-1" role="navigation">
+        <nav className="hidden md:flex items-center gap-7 lg:gap-9" role="navigation">
           {NAV_LINKS.map((link) => (
             <button
               key={link}
               onClick={() => scrollTo(link)}
-              className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeSection === link
+              aria-current={activeSection === link ? 'page' : undefined}
+              className={`text-[13px] font-medium tracking-wide transition-colors duration-200 ${activeSection === link
                 ? 'text-white'
-                : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+                : 'text-gray-400 hover:text-gray-200'
                 }`}
             >
-              {activeSection === link && (
-                <span
-                  className="absolute inset-0 rounded-lg"
-                  style={{
-                    background: 'rgba(122, 51, 255, 0.12)',
-                    border: '1px solid rgba(122, 51, 255, 0.25)',
-                  }}
-                />
-              )}
-              <span className="relative z-10">{link}</span>
+              {link}
             </button>
           ))}
         </nav>
 
-        <button
-          onClick={() => scrollTo('contact')}
-          className="hidden md:flex btn-primary text-xs py-2 px-4"
-        >
-          Hire me
-        </button>
+        <div className="flex items-center gap-2 justify-self-end">
+          <div
+            className="inline-flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium sm:px-4 sm:py-2 sm:text-sm"
+            style={{
+              background: 'rgba(122, 51, 255, 0.1)',
+              border: '1px solid rgba(122, 51, 255, 0.25)',
+              color: '#9b6dff',
+            }}
+          >
+            <span
+              className="h-2 w-2 shrink-0 rounded-full bg-green-400"
+              style={{ boxShadow: '0 0 8px rgba(74, 222, 128, 0.8)' }}
+            />
+            <span className="sm:hidden">Open</span>
+            <span className="hidden sm:inline">Open to opportunities</span>
+          </div>
 
-        <button
-          className="md:hidden p-2 text-gray-400 hover:text-white transition-colors"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-        >
-          {menuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
+          <button
+            className="md:hidden p-2 -mr-2 text-gray-400 hover:text-white transition-colors"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
       {menuOpen && (
@@ -140,12 +143,6 @@ export default function Navbar() {
                 {link}
               </button>
             ))}
-            <button
-              onClick={() => scrollTo('contact')}
-              className="btn-primary mt-2 justify-center text-sm"
-            >
-              Hire me
-            </button>
           </nav>
         </div>
       )}

@@ -1,204 +1,116 @@
-import { useState, useEffect, useRef } from 'react'
-import { Download, ArrowRight, Shield, Code2, ChevronDown } from 'lucide-react'
-import avatarImg from '../assets/images/avatar.jpeg'
+import { ChevronDown } from 'lucide-react'
+import avatarImg from '../assets/images/avatar-hero.png'
 
-const ROLES = [
-  'Full-Stack Developer',
-  'Student Security Researcher',
-  'Backend Focused',
-  'Aspiring Cybersecurity Professional',
-  'CTF Player',
-  'Co-Founder'
-];
+const ANTON = "font-['Anton','Bebas_Neue','Oswald',sans-serif] font-normal uppercase"
+const SERIF = "font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal"
+const PORTRAIT_MASK =
+  '[mask-image:radial-gradient(ellipse_60%_70%_at_50%_40%,black_55%,transparent_100%)] ' +
+  '[-webkit-mask-image:radial-gradient(ellipse_60%_70%_at_50%_40%,black_55%,transparent_100%)]'
 
 export default function Hero() {
-  const [displayText, setDisplayText] = useState('')
-  const [roleIdx, setRoleIdx] = useState(0)
-  const [isDeleting, setIsDeleting] = useState(false)
-  const timerRef = useRef(null)
-
-  useEffect(() => {
-    const current = ROLES[roleIdx]
-
-    const tick = () => {
-      if (!isDeleting) {
-        const next = current.slice(0, displayText.length + 1)
-        setDisplayText(next)
-        if (next === current) {
-          timerRef.current = setTimeout(() => setIsDeleting(true), 2000)
-          return
-        }
-        timerRef.current = setTimeout(tick, 80)
-      } else {
-        const next = current.slice(0, displayText.length - 1)
-        setDisplayText(next)
-        if (next === '') {
-          setIsDeleting(false)
-          setRoleIdx((i) => (i + 1) % ROLES.length)
-          return
-        }
-        timerRef.current = setTimeout(tick, 45)
-      }
-    }
-
-    timerRef.current = setTimeout(tick, 120)
-    return () => clearTimeout(timerRef.current)
-  }, [displayText, isDeleting, roleIdx])
-
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center overflow-x-hidden"
+      className="relative isolate min-h-screen overflow-hidden lg:h-screen lg:min-h-[700px]"
       style={{ backgroundColor: '#090514' }}
     >
-      <div className="absolute inset-0 z-0 flex justify-end">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background: [
+            'radial-gradient(ellipse 42% 55% at 50% 58%, rgba(122,51,255,0.26) 0%, transparent 70%)',
+            'radial-gradient(ellipse 70% 55% at 50% 100%, rgba(180,51,255,0.14) 0%, transparent 70%)',
+            'radial-gradient(ellipse 28% 32% at 50% 38%, rgba(192,132,252,0.10) 0%, transparent 70%)',
+          ].join(','),
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 opacity-40"
+        style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%237A33FF' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }}
+      />
+
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-[15]"
+        style={{
+          background:
+            'radial-gradient(ellipse 55% 65% at 50% 45%, transparent 30%, rgba(9,5,20,0.55) 72%, rgba(9,5,20,0.92) 100%)',
+        }}
+      />
+
+      <div className="relative mx-auto flex h-full w-full max-w-[1400px] flex-col items-center px-6 pb-24 pt-24 md:px-12 lg:block lg:py-0">
+
+        <p
+          className={`${SERIF} relative z-0 -mb-14 flex items-end justify-center gap-3 whitespace-nowrap text-[clamp(3.5rem,8vw,8rem)] leading-none animate-load-fade lg:absolute lg:left-1/2 lg:top-[16%] lg:mb-0 lg:-translate-x-1/2 lg:gap-0`}
+          style={{
+            color: '#ece3ff',
+            textShadow: '0 0 40px rgba(122, 51, 255, 0.35)',
+            animationDelay: '0.25s',
+          }}
+        >
+          <span>Hey,</span>
+          <span aria-hidden="true" className="hidden w-[clamp(100px,11vw,180px)] shrink-0 lg:block" />
+          <span>There</span>
+        </p>
+
         <img
           src={avatarImg}
-          alt=""
-          className="h-full w-full md:w-1/2 object-cover opacity-15 md:opacity-[0.18] brightness-50 animate-load-fade"
-          style={{ objectPosition: 'center 80%', animationDelay: '0.2s' }}
+          alt="Portrait of Drake"
+          draggable="false"
+          className={`${PORTRAIT_MASK} pointer-events-none relative z-10 h-auto w-[min(86vw,420px)] select-none object-contain brightness-[0.8] contrast-[1.1] saturate-[0.85] animate-load-fade lg:absolute lg:bottom-0 lg:left-1/2 lg:h-[92%] lg:w-auto lg:max-w-none lg:-translate-x-1/2`}
+          style={{ animationDelay: '0.15s' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#090514] via-[#090514] md:via-[#090514]/70 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#090514] via-transparent to-[#090514]/40" />
-      </div>
 
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        <div
-          className="absolute w-[600px] h-[600px] rounded-full"
-          style={{
-            top: '10%',
-            left: '-10%',
-            background: 'radial-gradient(circle, rgba(122,51,255,0.12) 0%, transparent 70%)',
-          }}
-        />
-        <div
-          className="absolute w-[500px] h-[500px] rounded-full"
-          style={{
-            bottom: '10%',
-            right: '-5%',
-            background: 'radial-gradient(circle, rgba(180,51,255,0.08) 0%, transparent 70%)',
-          }}
-        />
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%237A33FF' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }}
-        />
-      </div>
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-24 pb-12 sm:pb-16 flex items-center relative z-10 w-full">
-        <div className="space-y-6 sm:space-y-8 max-w-2xl relative z-10">
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-medium animate-load-fade-up"
+        <h1
+          className={`${ANTON} relative z-20 -mt-16 text-center animate-load-fade-up lg:absolute lg:bottom-24 lg:left-12 lg:mt-0 lg:text-left min-[1500px]:bottom-10`}
+          style={{ animationDelay: '0.35s' }}
+        >
+          <span
+            className="mb-1 block text-[clamp(1.5rem,3vw,3rem)] leading-none tracking-normal"
+            style={{ color: '#c4b5fd' }}
+          >
+            I am
+          </span>{' '}
+          <span
+            className="block text-[clamp(4rem,10vw,9rem)] leading-[0.85] tracking-tight"
             style={{
-              background: 'rgba(122, 51, 255, 0.1)',
-              border: '1px solid rgba(122, 51, 255, 0.25)',
-              color: '#9b6dff',
-              animationDelay: '0.1s',
+              background: 'linear-gradient(135deg, #ffffff 0%, #c084fc 50%, #7A33FF 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
             }}
           >
-            <span
-              className="w-2 h-2 rounded-full bg-green-400 shrink-0"
-              style={{ boxShadow: '0 0 8px rgba(74, 222, 128, 0.8)' }}
-            />
-            Open to opportunities
-          </div>
+            Drake
+          </span>
+        </h1>
 
-          <div>
-            <p
-              className="text-gray-400 text-base sm:text-lg mb-2 font-light animate-load-fade-up"
-              style={{ animationDelay: '0.15s' }}
-            >
-              Hello, I&apos;m
-            </p>
-            <h1
-              className="font-black leading-none mb-3 sm:mb-4 animate-load-fade-up"
-              style={{
-                fontSize: 'clamp(2.5rem, 12vw, 5.5rem)',
-                background: 'linear-gradient(135deg, #ffffff 0%, #c084fc 50%, #7A33FF 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                animationDelay: '0.25s',
-              }}
-            >
-              Drake
-            </h1>
-
-            <div
-              className="flex flex-wrap items-center gap-0 min-h-9 animate-load-fade-up"
-              style={{ animationDelay: '0.35s' }}
-            >
-              <span
-                className="text-lg sm:text-xl md:text-2xl font-semibold break-words"
-                style={{ color: '#9b6dff' }}
-              >
-                {displayText}
-              </span>
-              <span
-                className="cursor-blink text-lg sm:text-xl md:text-2xl font-light ml-0.5"
-                style={{ color: '#7A33FF' }}
-              >
-                |
-              </span>
-            </div>
-          </div>
-
-          <p
-            className="text-gray-400 leading-relaxed max-w-md text-sm sm:text-base animate-load-fade-up"
-            style={{ animationDelay: '0.45s' }}
-          >
-          I am a Full-stack Developer and Student Security Researcher focused on discovering and analyzing security vulnerabilities, conducting authorized penetration testing, and developing effective remediation strategies. With a strong interest in backend development, I focus on understanding application security at its core and building more secure, reliable systems.
+        <div
+          className="relative z-20 mt-6 flex flex-col-reverse items-center gap-4 text-center animate-load-fade-up lg:absolute lg:bottom-24 lg:right-12 lg:mt-0 lg:w-[300px] lg:flex-col lg:items-end lg:text-right min-[1500px]:bottom-10"
+          style={{ animationDelay: '0.45s' }}
+        >
+          <p className="max-w-[260px] text-sm leading-relaxed text-white/70">
+            Full-stack Developer and Student Security Researcher. I find vulnerabilities, run authorized pen tests, and build more secure systems.
           </p>
-
-          <div
-            className="flex flex-wrap gap-3 sm:gap-4 animate-load-fade-up"
-            style={{ animationDelay: '0.55s' }}
+          <p
+            className={`${ANTON} text-[clamp(1.75rem,3.4vw,3.5rem)] leading-[0.9]`}
+            style={{ color: '#e9dfff' }}
           >
-            {[
-              { icon: <Code2 size={14} />, label: '31 technologies' },
-              { icon: <Shield size={14} />, label: '12 Security tools' },
-            ].map(({ icon, label }) => (
-              <div
-                key={label}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs sm:text-sm"
-                style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(122,51,255,0.15)',
-                  color: '#a78bfa',
-                }}
-              >
-                {icon}
-                <span>{label}</span>
-              </div>
-            ))}
-          </div>
-
-          <div
-            className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 animate-load-fade-up"
-            style={{ animationDelay: '0.65s' }}
-          >
-            <a href="/images/Manguilimotan.pdf" download className="btn-primary justify-center w-full sm:w-auto">
-              <Download size={16} />
-              Download CV
-            </a>
-            <button
-              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-              className="btn-outline justify-center w-full sm:w-auto"
-            >
-              Get in Touch
-              <ArrowRight size={16} />
-            </button>
-          </div>
+            <span className="block">Student</span>
+            <span className="block">Security</span>
+            <span className="block">Researcher</span>
+          </p>
         </div>
       </div>
 
       <button
         onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-600 hover:text-gray-400 transition-colors animate-load-fade"
+        className="absolute bottom-4 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-1 text-gray-600 transition-colors hover:text-gray-400 animate-load-fade"
         style={{ animationDelay: '1.2s' }}
         aria-label="Scroll to About section"
       >
-        <span className="text-xs tracking-widest uppercase font-medium">Scroll</span>
+        <span className="text-xs font-medium uppercase tracking-widest">Scroll</span>
         <ChevronDown size={16} className="animate-bounce" />
       </button>
     </section>

@@ -26,6 +26,13 @@ About:
 - Bridges clean frontend experiences with hardened backend systems.
 - Plays CTFs (Capture The Flag) competitions for cybersecurity practice.
 
+Key Achievements:
+- CHAMPION CTF @ CEC IT DAYS
+- 1st runner up at web dev design @ cec
+- Top 9 at HackForGov regional CTF competition
+- Hacktoberfest champion hackathon
+- IBPAP hackathon finalist (creating an innovative solution with AI integration)
+
 Skills:
 {skills_text}
 
