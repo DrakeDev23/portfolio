@@ -5,7 +5,6 @@ import {
   Shield,
   Trophy,
   Award,
-  Medal,
   ShieldCheck,
   Bug,
   Server,
@@ -14,7 +13,6 @@ import {
 import SectionHeader from './SectionHeader'
 import GlassCard from './GlassCard'
 import GitHubContributions from './GitHubContributions'
-import useScrollReveal from '../hooks/useScrollReveal'
 
 const FOCUS_ITEMS = [
   {
@@ -50,34 +48,34 @@ const FOCUS_ITEMS = [
 
 const ACHIEVEMENTS = [
   {
-    title: 'CHAMPION CTF @ CEC IT DAYS',
-    event: 'Cebu Eastern College · Cybersecurity CTF',
-    badge: 'Champion',
-    type: 'gold',
+    result: 'Champion',
+    isChampion: true,
+    title: 'CTF at CEC IT Days',
+    subtitle: 'Cebu Eastern College · Cybersecurity CTF',
   },
   {
-    title: '1st Runner Up at Web Dev Design @ CEC',
-    event: 'Cebu Eastern College · Web Development',
-    badge: '1st Runner-Up',
-    type: 'silver',
+    result: '1st runner-up',
+    isChampion: false,
+    title: 'Web Dev Design at CEC',
+    subtitle: 'Cebu Eastern College · Web development',
   },
   {
-    title: 'Top 9 at HackForGov Regional CTF Competition',
-    event: 'DICT Region 7 · Regional CTF Competition',
-    badge: 'Top 9',
-    type: 'purple',
+    result: 'Top 9',
+    isChampion: false,
+    title: 'HackForGov Regional CTF Competition',
+    subtitle: 'DICT Region 7 · Regional CTF',
   },
   {
-    title: 'Hacktoberfest Champion Hackathon',
-    event: 'Cebu Hacktoberfest · Open-Source Hackathon',
-    badge: 'Champion',
-    type: 'gold',
+    result: 'Champion',
+    isChampion: true,
+    title: 'Hacktoberfest Hackathon',
+    subtitle: 'Cebu Hacktoberfest · Open-source hackathon',
   },
   {
-    title: 'IBPAP Hackathon Finalist',
-    event: 'Developed an innovative solution with AI integration',
-    badge: 'Finalist',
-    type: 'purple',
+    result: 'Finalist',
+    isChampion: false,
+    title: 'IBPAP Hackathon',
+    subtitle: 'Built an innovative solution with AI integration',
   },
 ]
 
@@ -93,6 +91,37 @@ const COURSES = [
   'BSIT student',
   '2nd year Student',
   'AWSSBG membership Officer @ CEC',
+]
+
+const CERTIFICATES = [
+  {
+    title: 'Cybersecurity: Turning data into defense',
+    subtitle: 'Security analytics · Certificate',
+  },
+  {
+    title: 'Beyond the firewall',
+    subtitle: 'RivanIT Cebu · Security workshop',
+  },
+  {
+    title: 'Introduction to cybersecurity',
+    subtitle: 'Cisco Networking Academy · Course',
+  },
+  {
+    title: 'Python developer certification',
+    subtitle: 'freeCodeCamp · Course',
+  },
+  {
+    title: 'APEX (AppSec Professionals eXchange)',
+    subtitle: 'AppSec community · Summit',
+  },
+  {
+    title: 'Into the cloud: About AWS',
+    subtitle: 'Cloud computing · Training',
+  },
+  {
+    title: 'Exploring career paths in the AI space',
+    subtitle: 'AI and career summit · Seminar',
+  },
 ]
 
 function FlipCard({ title, icon: Icon, description, tools }) {
@@ -170,13 +199,11 @@ function FlipCard({ title, icon: Icon, description, tools }) {
 }
 
 export default function About() {
-  const [sectionRef, isVisible] = useScrollReveal()
-
   return (
     <section id="about" className="py-28 relative" style={{ backgroundColor: '#090514' }}>
       <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(122,51,255,0.3), transparent)' }} />
 
-      <div ref={sectionRef} className={`max-w-6xl mx-auto px-6 reveal ${isVisible ? 'reveal-visible' : ''}`}>
+      <div className="max-w-6xl mx-auto px-6">
         <SectionHeader eyebrow="Who I Am" title="About Me" />
 
         <div className="mx-auto mb-14 max-w-2xl text-center">
@@ -185,7 +212,8 @@ export default function About() {
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             {[
-              { icon: <Trophy size={14} />, label: '5 Achievements' },
+              { icon: <Trophy size={14} />, label: `${ACHIEVEMENTS.length} Achievements` },
+              { icon: <Award size={14} />, label: `${CERTIFICATES.length} Certificates` },
               { icon: <Code2 size={14} />, label: '31 technologies' },
               { icon: <Shield size={14} />, label: '12 Security tools' },
             ].map(({ icon, label }) => (
@@ -205,7 +233,7 @@ export default function About() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 items-stretch mb-10">
+        <div className="grid md:grid-cols-2 gap-8 items-start mb-12">
           <div className="space-y-6 flex flex-col justify-between">
             <GlassCard>
               <div className="flex items-start gap-4">
@@ -252,97 +280,140 @@ export default function About() {
           </div>
 
           <div>
-            <GlassCard className="h-full flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{ background: 'rgba(122,51,255,0.15)', color: '#9b6dff' }}
+            <GlassCard className="p-6">
+              <div className="flex items-center justify-between">
+                <span
+                  className="text-[11px] font-medium uppercase tracking-wider"
+                  style={{ color: '#a78bfa' }}
+                >
+                  RECOGNITION
+                </span>
+                <span
+                  className="text-[12px] font-normal"
+                  style={{ color: '#a1a1aa' }}
+                >
+                  {ACHIEVEMENTS.length} honors
+                </span>
+              </div>
+              <h3
+                className="mt-1 text-[18px] font-medium"
+                style={{ color: '#f4f4f5' }}
+              >
+                Key achievements
+              </h3>
+
+              <div className="mt-4 border-t border-white/10">
+                {ACHIEVEMENTS.map((item) => (
+                  <div
+                    key={item.title}
+                    className="grid grid-cols-1 sm:grid-cols-[96px_1fr] items-baseline gap-1 sm:gap-4 border-b border-white/10 py-3.5 px-2 rounded-lg transition-colors hover:bg-white/[0.02]"
+                  >
+                    <span
+                      className={`text-[13px] ${
+                        item.isChampion ? 'font-medium' : 'font-normal'
+                      }`}
+                      style={{ color: item.isChampion ? '#a78bfa' : '#a1a1aa' }}
                     >
-                      <Trophy size={20} strokeWidth={1.5} />
-                    </div>
+                      {item.result}
+                    </span>
                     <div>
-                      <p className="section-eyebrow mb-0.5">Recognition</p>
-                      <h3 className="text-white font-bold text-base">Key Achievements</h3>
+                      <p
+                        className="text-[15px] font-medium leading-snug"
+                        style={{ color: '#f4f4f5' }}
+                      >
+                        {item.title}
+                      </p>
+                      <p
+                        className="text-[13px] font-normal mt-0.5"
+                        style={{ color: '#a1a1aa' }}
+                      >
+                        {item.subtitle}
+                      </p>
                     </div>
                   </div>
-                  <span
-                    className="text-xs px-2.5 py-1 rounded-full font-mono font-medium"
-                    style={{
-                      background: 'rgba(122,51,255,0.1)',
-                      border: '1px solid rgba(122,51,255,0.25)',
-                      color: '#c084fc',
-                    }}
-                  >
-                    5 Honors
-                  </span>
-                </div>
-
-                <div className="space-y-2.5">
-                  {ACHIEVEMENTS.map((item) => {
-                    const isGold = item.type === 'gold'
-                    const isSilver = item.type === 'silver'
-
-                    const iconBg = isGold
-                      ? 'rgba(234, 179, 8, 0.12)'
-                      : isSilver
-                      ? 'rgba(147, 197, 253, 0.12)'
-                      : 'rgba(122, 51, 255, 0.15)'
-                    const iconColor = isGold ? '#fbbf24' : isSilver ? '#93c5fd' : '#c084fc'
-                    const badgeStyle = isGold
-                      ? { background: 'rgba(234, 179, 8, 0.1)', borderColor: 'rgba(234, 179, 8, 0.25)', color: '#fde047' }
-                      : isSilver
-                      ? { background: 'rgba(147, 197, 253, 0.1)', borderColor: 'rgba(147, 197, 253, 0.25)', color: '#93c5fd' }
-                      : { background: 'rgba(122, 51, 255, 0.1)', borderColor: 'rgba(122, 51, 255, 0.25)', color: '#c084fc' }
-
-                    const IconComponent = isGold ? Trophy : isSilver ? Medal : Award
-
-                    return (
-                      <div
-                        key={item.title}
-                        className="flex items-start sm:items-center justify-between gap-3 p-2.5 rounded-xl transition-all duration-200 hover:bg-white/[0.03] border border-transparent hover:border-purple-500/20"
-                      >
-                        <div className="flex items-start sm:items-center gap-3 min-w-0">
-                          <div
-                            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 sm:mt-0"
-                            style={{ background: iconBg, color: iconColor }}
-                          >
-                            <IconComponent size={16} strokeWidth={1.8} />
-                          </div>
-                          <div className="min-w-0">
-                            <h4 className="text-white text-xs sm:text-sm font-semibold leading-snug">
-                              {item.title}
-                            </h4>
-                            <p className="text-gray-400 text-[11px] sm:text-xs">
-                              {item.event}
-                            </p>
-                          </div>
-                        </div>
-                        <span
-                          className="flex-shrink-0 text-[10px] sm:text-xs font-mono font-medium px-2 py-0.5 rounded-md border whitespace-nowrap self-start sm:self-center"
-                          style={badgeStyle}
-                        >
-                          {item.badge}
-                        </span>
-                      </div>
-                    )
-                  })}
-                </div>
+                ))}
               </div>
             </GlassCard>
           </div>
         </div>
 
         <div className="mt-12">
+          <GlassCard className="p-6 sm:p-8">
+            <div className="flex items-center justify-between">
+              <span
+                className="text-[11px] font-medium uppercase tracking-wider"
+                style={{ color: '#a78bfa' }}
+              >
+                CONTINUOUS LEARNING
+              </span>
+              <span
+                className="text-[12px] font-normal"
+                style={{ color: '#a1a1aa' }}
+              >
+                {CERTIFICATES.length} completed
+              </span>
+            </div>
+            <h3
+              className="mt-1 text-[18px] font-medium"
+              style={{ color: '#f4f4f5' }}
+            >
+              Certificates and specialized training
+            </h3>
+
+            <div className="mt-4 border-t border-white/10">
+              <div className="grid grid-cols-1 md:grid-cols-2 md:divide-x md:divide-white/10">
+                <div className="md:pr-7">
+                  {CERTIFICATES.slice(0, Math.ceil(CERTIFICATES.length / 2)).map((item) => (
+                    <div
+                      key={item.title}
+                      className="border-b border-white/10 py-3.5 px-2 rounded-lg transition-colors hover:bg-white/[0.02]"
+                    >
+                      <p
+                        className="text-[14px] font-medium leading-snug"
+                        style={{ color: '#f4f4f5' }}
+                      >
+                        {item.title}
+                      </p>
+                      <p
+                        className="text-[12px] font-normal mt-1"
+                        style={{ color: '#a1a1aa' }}
+                      >
+                        {item.subtitle}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <div className="md:pl-7">
+                  {CERTIFICATES.slice(Math.ceil(CERTIFICATES.length / 2)).map((item) => (
+                    <div
+                      key={item.title}
+                      className="border-b border-white/10 py-3.5 px-2 rounded-lg transition-colors hover:bg-white/[0.02]"
+                    >
+                      <p
+                        className="text-[14px] font-medium leading-snug"
+                        style={{ color: '#f4f4f5' }}
+                      >
+                        {item.title}
+                      </p>
+                      <p
+                        className="text-[12px] font-normal mt-1"
+                        style={{ color: '#a1a1aa' }}
+                      >
+                        {item.subtitle}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </GlassCard>
+        </div>
+
+        <div className="mt-12">
           <p className="section-eyebrow mb-5">What I Focus On</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {FOCUS_ITEMS.map((item, i) => (
-              <div
-                key={item.title}
-                className={`reveal-scale ${isVisible ? 'reveal-visible' : ''}`}
-                style={{ transitionDelay: `${i * 0.08}s` }}
-              >
+            {FOCUS_ITEMS.map((item) => (
+              <div key={item.title}>
                 <FlipCard {...item} />
               </div>
             ))}

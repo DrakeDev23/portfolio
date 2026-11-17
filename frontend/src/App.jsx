@@ -4,6 +4,7 @@ import './styles/animations.css'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
+import Experience from './components/Experience'
 import Skills from './components/Skills'
 import Projects from './components/Projects'
 import Events from './components/Events'
@@ -13,8 +14,8 @@ import Chatbot from './components/Chatbot'
 import LinuxBootLoader from './components/LinuxBootLoader'
 import { PortfolioContext, PortfolioProvider } from './context/PortfolioContext'
 
-const SESSION_KEY = 'portfolio_initialized'
-const DATA_KEY = 'portfolio_data'
+const SESSION_KEY = 'portfolio_initialized_v3'
+const DATA_KEY = 'portfolio_data_v3'
 
 function Portfolio() {
   return (
@@ -23,6 +24,7 @@ function Portfolio() {
       <main>
         <Hero />
         <About />
+        <Experience />
         <Skills />
         <Projects />
         <Events />

@@ -42,19 +42,6 @@ export default function Hero() {
 
       <div className="relative mx-auto flex h-full w-full max-w-[1400px] flex-col items-center px-6 pb-24 pt-24 md:px-12 lg:block lg:py-0">
 
-        <p
-          className={`${SERIF} relative z-0 -mb-14 flex items-end justify-center gap-3 whitespace-nowrap text-[clamp(3.5rem,8vw,8rem)] leading-none animate-load-fade lg:absolute lg:left-1/2 lg:top-[16%] lg:mb-0 lg:-translate-x-1/2 lg:gap-0`}
-          style={{
-            color: '#ece3ff',
-            textShadow: '0 0 40px rgba(122, 51, 255, 0.35)',
-            animationDelay: '0.25s',
-          }}
-        >
-          <span>Hey,</span>
-          <span aria-hidden="true" className="hidden w-[clamp(100px,11vw,180px)] shrink-0 lg:block" />
-          <span>There</span>
-        </p>
-
         <img
           src={avatarImg}
           alt="Portrait of Drake"
