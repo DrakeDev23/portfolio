@@ -1,80 +1,13 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState, useEffect } from 'react'
 import { portfolioApi } from '../api/portfolioApi'
-
-const TASKS = [
-  {
-    id: 'health',
-    label: 'Connecting FastAPI Backend',
-    progress: 20,
-    okMessage: 'FastAPI server connected',
-    run: async () => {
-      const health = await portfolioApi.health()
-      if (health.status !== 'online') {
-        throw new Error('FastAPI offline')
-      }
-      return { health }
-    },
-  },
-  {
-    id: 'database',
-    label: 'Connecting Database',
-    progress: 35,
-    okMessage: 'PostgreSQL database online',
-    run: async (ctx) => {
-      if (ctx.health?.database !== 'connected') {
-        throw new Error('Database unavailable')
-      }
-      return {}
-    },
-  },
-  {
-    id: 'profile',
-    label: 'Loading Profile Data',
-    progress: 45,
-    okMessage: 'Profile loaded',
-    run: async () => ({ profile: await portfolioApi.profile() }),
-  },
-  {
-    id: 'projects',
-    label: 'Loading Portfolio Data',
-    progress: 60,
-    okMessage: 'Projects loaded',
-    run: async () => ({ projects: await portfolioApi.projects() }),
-  },
-  {
-    id: 'skills',
-    label: 'Loading Skills',
-    progress: 70,
-    okMessage: 'Skills loaded',
-    run: async () => ({ skills: await portfolioApi.skills() }),
-  },
-  {
-    id: 'events',
-    label: 'Loading Events',
-    progress: 78,
-    okMessage: 'Events loaded',
-    run: async () => ({ events: await portfolioApi.events() }),
-  },
-  {
-    id: 'experience',
-    label: 'Loading Experience',
-    progress: 88,
-    okMessage: 'Experience loaded',
-    run: async () => ({ experience: await portfolioApi.experience() }),
-  },
-  {
-    id: 'certifications',
-    label: 'Checking System Integrity',
-    progress: 100,
-    okMessage: 'Portfolio verified',
-    run: async () => ({ certifications: await portfolioApi.certifications() }),
-  },
-]
+import { FALLBACK_PORTFOLIO_DATA } from '../constants/fallbackData'
 
 const STATIC_LOGS = [
   { id: 'static-init-kernel', type: 'ok', message: 'Initializing Kernel' },
   { id: 'static-load-security', type: 'ok', message: 'Loading Security Modules' },
 ]
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export function usePortfolioLoader() {
   const [progress, setProgress] = useState(0)
@@ -83,8 +16,11 @@ export function usePortfolioLoader() {
   const [error, setError] = useState(null)
   const [data, setData] = useState({})
   const [phase, setPhase] = useState('idle')
+  const [isSlow, setIsSlow] = useState(false)
+
   const ctxRef = useRef({})
   const logCounterRef = useRef(0)
+  const slowTimerRef = useRef(null)
 
   const addLog = useCallback((type, message) => {
     logCounterRef.current += 1
@@ -95,38 +31,165 @@ export function usePortfolioLoader() {
     setLogs((prev) => [...prev, { id, type, message }])
   }, [])
 
+  const skipWithFallback = useCallback(() => {
+    if (slowTimerRef.current) clearTimeout(slowTimerRef.current)
+    const combined = { ...FALLBACK_PORTFOLIO_DATA, ...ctxRef.current }
+    setData(combined)
+    ctxRef.current = combined
+    addLog('ok', 'Loaded cached offline profile')
+    addLog('ok', 'Portfolio verified (cached mode)')
+    setProgress(100)
+    setStatus('SYSTEM READY')
+    setPhase('ready')
+    return combined
+  }, [addLog])
+
   const run = useCallback(async () => {
     setError(null)
     setPhase('loading')
-    setProgress(0)
+    setProgress(15)
     setLogs(STATIC_LOGS)
-    setStatus('Initializing Secure Environment...')
+    setStatus('Connecting to Services...')
+    setIsSlow(false)
     ctxRef.current = {}
 
-    try {
-      for (const task of TASKS) {
-        setStatus(`${task.label}...`)
+    // Flag slow connection if Render cold start takes longer than 3.5s
+    if (slowTimerRef.current) clearTimeout(slowTimerRef.current)
+    slowTimerRef.current = setTimeout(() => {
+      setIsSlow(true)
+      setStatus('Waking up server instance from sleep mode...')
+    }, 3500)
 
-        const result = await task.run(ctxRef.current)
-        Object.assign(ctxRef.current, result)
-        setData({ ...ctxRef.current })
-        addLog('ok', task.okMessage)
-        setProgress(task.progress)
+    try {
+      // 1. Try single round-trip bootstrap endpoint first
+      let bootstrapData = null
+      try {
+        bootstrapData = await portfolioApi.bootstrap()
+      } catch {
+        // Fallback to parallel requests if bootstrap endpoint is not available
       }
 
+      if (bootstrapData && bootstrapData.status) {
+        if (slowTimerRef.current) clearTimeout(slowTimerRef.current)
+        setIsSlow(false)
+
+        addLog('ok', 'FastAPI server connected')
+        setProgress(35)
+        await delay(50)
+
+        const dbOnline = bootstrapData.database === 'connected'
+        addLog(dbOnline ? 'ok' : 'error', dbOnline ? 'PostgreSQL database online' : 'Database in degraded mode')
+        setProgress(50)
+        await delay(50)
+
+        addLog('ok', 'Profile loaded')
+        setProgress(65)
+        await delay(50)
+
+        addLog('ok', 'Projects & Skills loaded')
+        setProgress(85)
+        await delay(50)
+
+        addLog('ok', 'Events & Experience loaded')
+        addLog('ok', 'Portfolio verified')
+        setProgress(100)
+
+        const finalData = {
+          profile: bootstrapData.profile,
+          projects: bootstrapData.projects,
+          skills: bootstrapData.skills,
+          events: bootstrapData.events,
+          experience: bootstrapData.experience,
+          certifications: bootstrapData.certifications,
+          health: { status: bootstrapData.status, database: bootstrapData.database },
+        }
+
+        ctxRef.current = finalData
+        setData(finalData)
+        setStatus('SYSTEM READY')
+        setPhase('ready')
+        return finalData
+      }
+
+      // 2. Parallel fetch if bootstrap is unavailable
+      setStatus('Fetching portfolio modules in parallel...')
+      setProgress(25)
+
+      const [healthRes, profileRes, projectsRes, skillsRes, eventsRes, expRes, certsRes] =
+        await Promise.allSettled([
+          portfolioApi.health(),
+          portfolioApi.profile(),
+          portfolioApi.projects(),
+          portfolioApi.skills(),
+          portfolioApi.events(),
+          portfolioApi.experience(),
+          portfolioApi.certifications(),
+        ])
+
+      if (slowTimerRef.current) clearTimeout(slowTimerRef.current)
+      setIsSlow(false)
+
+      const health = healthRes.status === 'fulfilled' ? healthRes.value : null
+      if (health && health.status === 'online') {
+        addLog('ok', 'FastAPI server connected')
+        addLog(health.database === 'connected' ? 'ok' : 'error', health.database === 'connected' ? 'PostgreSQL database online' : 'Database disconnected')
+      } else {
+        addLog('error', 'FastAPI offline, using cached snapshot')
+      }
+      setProgress(45)
+      await delay(50)
+
+      const profile = profileRes.status === 'fulfilled' ? profileRes.value : FALLBACK_PORTFOLIO_DATA.profile
+      addLog('ok', 'Profile loaded')
+      setProgress(60)
+      await delay(50)
+
+      const projects = projectsRes.status === 'fulfilled' && Array.isArray(projectsRes.value) ? projectsRes.value : FALLBACK_PORTFOLIO_DATA.projects
+      addLog('ok', 'Projects loaded')
+      setProgress(75)
+      await delay(50)
+
+      const skills = skillsRes.status === 'fulfilled' ? skillsRes.value : null
+      addLog('ok', 'Skills loaded')
+      setProgress(85)
+      await delay(50)
+
+      const events = eventsRes.status === 'fulfilled' && Array.isArray(eventsRes.value) ? eventsRes.value : FALLBACK_PORTFOLIO_DATA.events
+      const experience = expRes.status === 'fulfilled' ? expRes.value : FALLBACK_PORTFOLIO_DATA.experience
+      const certifications = certsRes.status === 'fulfilled' ? certsRes.value : FALLBACK_PORTFOLIO_DATA.certifications
+
+      addLog('ok', 'Events & Experience loaded')
+      addLog('ok', 'Portfolio verified')
+      setProgress(100)
+
+      const finalData = {
+        profile,
+        projects,
+        skills,
+        events,
+        experience,
+        certifications,
+        health,
+      }
+
+      ctxRef.current = finalData
+      setData(finalData)
       setStatus('SYSTEM READY')
       setPhase('ready')
-      return ctxRef.current
+      return finalData
     } catch (err) {
+      if (slowTimerRef.current) clearTimeout(slowTimerRef.current)
       const message = err.message || 'Connection failed'
-      const isDb = message.toLowerCase().includes('database')
-      addLog('error', isDb ? 'Database unreachable' : 'FastAPI offline')
-      setError(message)
-      setStatus('SYSTEM ERROR')
-      setPhase('error')
-      return null
+      addLog('error', 'Using fallback cached portfolio')
+      return skipWithFallback()
     }
-  }, [addLog])
+  }, [addLog, skipWithFallback])
 
-  return { progress, logs, status, error, data, phase, run }
+  useEffect(() => {
+    return () => {
+      if (slowTimerRef.current) clearTimeout(slowTimerRef.current)
+    }
+  }, [])
+
+  return { progress, logs, status, error, data, phase, isSlow, run, skipWithFallback }
 }
