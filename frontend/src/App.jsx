@@ -14,6 +14,7 @@ import LinuxBootLoader from './components/LinuxBootLoader'
 import { PortfolioContext, PortfolioProvider } from './context/PortfolioContext'
 
 const SESSION_KEY = 'portfolio_initialized'
+const DATA_KEY = 'portfolio_data'
 
 function Portfolio() {
   return (
@@ -37,10 +38,20 @@ export default function App() {
   const [booted, setBooted] = useState(
     () => sessionStorage.getItem(SESSION_KEY) === 'true',
   )
-  const [portfolioData, setPortfolioData] = useState(null)
+  const [portfolioData, setPortfolioData] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(DATA_KEY)
+      return saved ? JSON.parse(saved) : null
+    } catch {
+      return null
+    }
+  })
 
   const handleBootComplete = (data) => {
     sessionStorage.setItem(SESSION_KEY, 'true')
+    try {
+      sessionStorage.setItem(DATA_KEY, JSON.stringify(data))
+    } catch {}
     setPortfolioData(data)
     setBooted(true)
   }

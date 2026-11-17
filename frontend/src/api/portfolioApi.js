@@ -1,7 +1,7 @@
 const API = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
 
-async function fetchJson(path) {
-  const res = await fetch(`${API}${path}`)
+async function fetchJson(path, options = {}) {
+  const res = await fetch(`${API}${path}`, options)
   if (!res.ok) {
     const error = new Error(`${path} failed (${res.status})`)
     error.status = res.status
@@ -11,14 +11,15 @@ async function fetchJson(path) {
 }
 
 export const portfolioApi = {
-  health: () => fetchJson('/api/health'),
-  profile: () => fetchJson('/api/profile'),
-  projects: () => fetchJson('/api/projects'),
-  skills: () => fetchJson('/api/skills'),
-  events: () => fetchJson('/api/events'),
-  experience: () => fetchJson('/api/experience'),
-  certifications: () => fetchJson('/api/certifications'),
-  githubContributions: () => fetchJson('/api/github/contributions'),
+  bootstrap: (options) => fetchJson('/api/bootstrap', options),
+  health: (options) => fetchJson('/api/health', options),
+  profile: (options) => fetchJson('/api/profile', options),
+  projects: (options) => fetchJson('/api/projects', options),
+  skills: (options) => fetchJson('/api/skills', options),
+  events: (options) => fetchJson('/api/events', options),
+  experience: (options) => fetchJson('/api/experience', options),
+  certifications: (options) => fetchJson('/api/certifications', options),
+  githubContributions: (options) => fetchJson('/api/github/contributions', options),
 }
 
 export { API }

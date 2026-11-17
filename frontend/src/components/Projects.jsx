@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Heart } from 'lucide-react'
 import SectionHeader from './SectionHeader'
 import useScrollReveal from '../hooks/useScrollReveal'
 import { usePortfolioData } from '../context/PortfolioContext'
+import { PROJECTS_DATA } from '../constants/projectsData'
 
 import awsImg from '../assets/images/projects/aws.jpeg'
 import beautyImg from '../assets/images/projects/beauty.jpeg'
@@ -51,8 +52,9 @@ const getLikedSet = () => {
 
 export default function Projects() {
   const prefetched = usePortfolioData()
-  const [projects, setProjects] = useState(prefetched?.projects ?? [])
-  const [loading, setLoading] = useState(!prefetched?.projects)
+  const initialProjects = prefetched?.projects?.length ? prefetched.projects : PROJECTS_DATA
+  const [projects, setProjects] = useState(initialProjects)
+  const [loading, setLoading] = useState(false)
   const [current, setCurrent] = useState(0)
   const [likedIds, setLikedIds] = useState(getLikedSet)
   const [justLiked, setJustLiked] = useState(false)
@@ -62,7 +64,7 @@ export default function Projects() {
   const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
 
   useEffect(() => {
-    if (prefetched?.projects) {
+    if (prefetched?.projects?.length) {
       setProjects(prefetched.projects)
       setLoading(false)
       return
@@ -71,7 +73,9 @@ export default function Projects() {
     fetch(`${apiUrl}/api/projects`)
       .then((r) => r.json())
       .then((data) => {
-        setProjects(data)
+        if (Array.isArray(data) && data.length > 0) {
+          setProjects(data)
+        }
         setLoading(false)
       })
       .catch(() => setLoading(false))

@@ -53,3 +53,15 @@ class SecurityToolSchema(BaseModel):
 class SkillsResponse(BaseModel):
     categories: list[SkillCategorySchema]
     security_tools: list[SecurityToolSchema]
+
+
+class BootstrapResponse(BaseModel):
+    status: str
+    database: str
+    profile: dict
+    projects: list[ProjectSchema]
+    skills: SkillsResponse
+    events: list[EventSchema]
+    experience: list[dict]
+    certifications: list[dict]
+

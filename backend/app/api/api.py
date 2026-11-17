@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from app.api.routes.bootstrap import router as bootstrap_router
 from app.api.routes.projects import router as projects_router
 from app.api.routes.events   import router as events_router
 from app.api.routes.skills   import router as skills_router
@@ -13,6 +14,7 @@ from app.api.routes.cv import router as cv_router
 
 
 api_router = APIRouter()
+api_router.include_router(bootstrap_router, prefix="/bootstrap")
 api_router.include_router(health_router, prefix="/health")
 api_router.include_router(profile_router, prefix="/profile")
 api_router.include_router(projects_router, prefix="/projects")
