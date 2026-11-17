@@ -14,8 +14,8 @@ import Chatbot from './components/Chatbot'
 import LinuxBootLoader from './components/LinuxBootLoader'
 import { PortfolioContext, PortfolioProvider } from './context/PortfolioContext'
 
-const SESSION_KEY = 'portfolio_initialized_v3'
-const DATA_KEY = 'portfolio_data_v3'
+const SESSION_KEY = 'portfolio_initialized_v5'
+const DATA_KEY = 'portfolio_data_v5'
 
 function Portfolio() {
   return (
