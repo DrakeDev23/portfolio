@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import './styles/animations.css'
 import Navbar from './components/Navbar'
@@ -11,11 +11,31 @@ import Events from './components/Events'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import Chatbot from './components/Chatbot'
-import LinuxBootLoader from './components/LinuxBootLoader'
-import { PortfolioContext, PortfolioProvider } from './context/PortfolioContext'
+import LoadingScreen from './components/LoadingScreen'
+import { PortfolioProvider } from './context/PortfolioContext'
+import { portfolioApi } from './api/portfolioApi'
+import { FALLBACK_PORTFOLIO_DATA } from './constants/fallbackData'
 
 const SESSION_KEY = 'portfolio_initialized_v5'
 const DATA_KEY = 'portfolio_data_v5'
+const BOOTSTRAP_TIMEOUT_MS = 10000
+
+async function fetchPortfolioData() {
+  try {
+    const d = await portfolioApi.bootstrap({ signal: AbortSignal.timeout(BOOTSTRAP_TIMEOUT_MS) })
+    return {
+      profile: d.profile,
+      projects: d.projects,
+      skills: d.skills,
+      events: d.events,
+      experience: d.experience,
+      certifications: d.certifications,
+      health: { status: d.status, database: d.database },
+    }
+  } catch {
+    return { ...FALLBACK_PORTFOLIO_DATA }
+  }
+}
 
 function Portfolio() {
   return (
@@ -49,20 +69,36 @@ export default function App() {
     }
   })
 
-  const handleBootComplete = (data) => {
-    sessionStorage.setItem(SESSION_KEY, 'true')
-    try {
-      sessionStorage.setItem(DATA_KEY, JSON.stringify(data))
-    } catch {}
-    setPortfolioData(data)
-    setBooted(true)
-  }
+  const [introDone, setIntroDone] = useState(() => booted && portfolioData != null)
+  const fetchStartedRef = useRef(false)
+
+  const handleServerReady = useCallback(() => {
+    if (fetchStartedRef.current) return
+    fetchStartedRef.current = true
+    fetchPortfolioData().then((data) => {
+      sessionStorage.setItem(SESSION_KEY, 'true')
+      try {
+        sessionStorage.setItem(DATA_KEY, JSON.stringify(data))
+      } catch {}
+      setPortfolioData(data)
+      setBooted(true)
+    })
+  }, [])
+
+  const showPortfolio = introDone && booted && portfolioData
 
   return (
     <PortfolioProvider portfolioData={portfolioData}>
       <AnimatePresence mode="wait">
-        {!booted ? (
-          <LinuxBootLoader key="boot" onComplete={handleBootComplete} />
+        {!introDone ? (
+          <LoadingScreen
+            key="boot"
+            apiUrl={import.meta.env.VITE_API_URL}
+            onReady={handleServerReady}
+            onDone={() => setIntroDone(true)}
+          />
+        ) : !showPortfolio ? (
+          <div key="waiting" className="fixed inset-0 bg-black" />
         ) : (
           <motion.div
             key="portfolio"

@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -32,13 +33,20 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
+DEFAULT_CORS_ORIGINS = [
+    "http://localhost:5173",
+    "https://drakedev.vercel.app",
+]
+CORS_ORIGINS = [
+    origin.strip().rstrip("/")
+    for origin in os.getenv("CORS_ORIGINS", ",".join(DEFAULT_CORS_ORIGINS)).split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "https://drakedev.vercel.app",
-    ],
-    allow_methods=["GET", "POST", "PATCH"],
+    allow_origins=CORS_ORIGINS,
+    allow_methods=["GET", "HEAD", "POST", "PATCH"],
     allow_headers=["Content-Type"],
 )
 
@@ -66,3 +74,18 @@ app.include_router(api_router, prefix="/api")
 @app.get("/")
 def root():
     return {"message": "ok"}
+
+
+@app.api_route("/health", methods=["GET", "HEAD"])
+def health():
+    return {"status": "ok"}
+
+
+@app.api_route("/health/db", methods=["GET", "HEAD"])
+async def health_db():
+    try:
+        async with engine.connect() as conn:
+            await conn.execute(text("SELECT 1"))
+    except Exception:
+        return JSONResponse(status_code=503, content={"status": "error", "database": "unreachable"})
+    return {"status": "ok", "database": "ok"}
