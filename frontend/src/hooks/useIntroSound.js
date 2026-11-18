@@ -130,7 +130,9 @@ export function useIntroSound({ sceneIndex, sceneMs, glitch, exiting, fadeOutMs 
     }
 
     events.forEach((e) => window.addEventListener(e, onGesture, { passive: true }))
-    if (navigator.userActivation?.hasBeenActive) onGesture()
+    try {
+      onGesture()
+    } catch {}
 
     return () => {
       removeListeners()
