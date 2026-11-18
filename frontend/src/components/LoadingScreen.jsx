@@ -83,6 +83,7 @@ function DistroLogos() {
 function statusLine(status, attempts, elapsed) {
   if (status === 'ready') return ''
   if (status === 'failed') return '[FAIL] Server did not respond in time.'
+  if (import.meta.env.PROD) return ''
 
   let message
   if (elapsed < 5) message = 'Pinging server...'
@@ -166,6 +167,8 @@ export default function LoadingScreen({ apiUrl, onDone, onReady }) {
   }, [exiting])
 
   const scene = SCENES[sceneIndex]
+  const line = statusLine(status, attempts, elapsed)
+  const progress = status === 'ready' ? 100 : Math.min(92, 92 * (1 - Math.exp(-elapsed / 22)))
 
   return (
     <div
@@ -223,25 +226,32 @@ export default function LoadingScreen({ apiUrl, onDone, onReady }) {
             Retry connection
           </button>
         )}
-        <p
-          aria-hidden="true"
-          className={[
-            'font-mono text-[11px] sm:text-xs tracking-wide',
-            status === 'failed' ? 'text-red-400' : 'text-purple-400',
-          ].join(' ')}
-        >
-          {statusLine(status, attempts, elapsed)}
-        </p>
-      </div>
-
-      <div className="absolute inset-x-0 bottom-0 h-[3px] bg-white/5 overflow-hidden" aria-hidden="true">
-        {status !== 'failed' && (
-          <div
+        {line && (
+          <p
+            aria-hidden="true"
             className={[
-              'h-full bg-[#a855f7] shadow-[0_0_12px_#a855f7]',
-              status === 'ready' ? 'loader-bar-full' : 'loader-bar-sweep',
+              'font-mono text-[11px] sm:text-xs tracking-wide',
+              status === 'failed' ? 'text-red-400' : 'text-purple-400',
             ].join(' ')}
-          />
+          >
+            {line}
+          </p>
+        )}
+        {status !== 'failed' && (
+          <div className="flex w-[min(78vw,360px)] items-center gap-3" aria-hidden="true">
+            <div className="loader-meter-track flex-1">
+              <div
+                className={`loader-meter-fill ${status === 'ready' ? 'is-done' : ''}`}
+                style={{ width: `${progress}%` }}
+              >
+                <div className="loader-meter-shimmer" />
+                <span className="loader-meter-head" />
+              </div>
+            </div>
+            <span className="w-10 text-right font-mono text-[11px] sm:text-xs tabular-nums text-purple-300">
+              {Math.round(progress)}%
+            </span>
+          </div>
         )}
       </div>
     </div>

@@ -70,19 +70,66 @@
   animation-delay: var(--delay, 0ms);
 }
 
-@keyframes loader-sweep {
-  0%   { transform: translateX(-100%); }
-  100% { transform: translateX(350%); }
+@keyframes loader-shimmer {
+  from { transform: translateX(-120%); }
+  to   { transform: translateX(320%); }
 }
 
-.loader-bar-sweep {
-  width: 30%;
-  animation: loader-sweep 1.4s ease-in-out infinite;
+@keyframes loader-head-pulse {
+  0%, 100% { opacity: 0.85; transform: translate(50%, -50%) scale(1); }
+  50%      { opacity: 1;    transform: translate(50%, -50%) scale(1.35); }
 }
 
-.loader-bar-full {
-  width: 100%;
+.loader-meter-track {
+  position: relative;
+  height: 6px;
+  border-radius: 9999px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0 1px, transparent 1px 12px),
+    rgba(255, 255, 255, 0.08);
+}
+
+.loader-meter-fill {
+  position: relative;
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #5b21b6 0%, #a855f7 60%, #f0abfc 100%);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.9), 0 0 28px rgba(168, 85, 247, 0.45);
+  transition: width 1s linear;
+}
+
+.loader-meter-fill.is-done {
   transition: width 400ms ease-out;
+}
+
+.loader-meter-shimmer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.loader-meter-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 35%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: loader-shimmer 1.5s linear infinite;
+}
+
+.loader-meter-head {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0 0 10px 3px #e879f9, 0 0 22px 6px rgba(168, 85, 247, 0.8);
+  transform: translate(50%, -50%);
+  animation: loader-head-pulse 1s ease-in-out infinite;
 }
 
 @keyframes loader-eq {
@@ -145,8 +192,6 @@
   .loader-scene,
   .loader-glitch,
   .loader-logo,
-  .loader-bar-sweep,
-  .loader-bar-full,
   .loader-eq.is-playing i {
     animation: none !important;
     transition: none !important;
@@ -156,8 +201,11 @@
     translate: none;
   }
 
-  .loader-bar-sweep {
-    width: 30%;
+  .loader-meter-fill,
+  .loader-meter-shimmer::after,
+  .loader-meter-head {
+    animation: none !important;
+    transition: none !important;
   }
 
   .loader-root.is-exiting {

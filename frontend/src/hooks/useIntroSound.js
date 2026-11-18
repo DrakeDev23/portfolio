@@ -4,6 +4,8 @@ const MASTER_VOLUME = 1.6
 
 const BEATS_PER_SCENE = 4
 
+const SILENT_WAV = 'data:audio/wav;base64,UklGRvQHAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YdAHAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA=='
+
 const NEW_LEVEL = 1.1
 const CLASSIC_LEVEL = 1
 
@@ -29,89 +31,114 @@ export function useIntroSound({ sceneIndex, sceneMs, glitch, exiting, fadeOutMs 
     const AudioCtx = window.AudioContext || window.webkitAudioContext
     if (!AudioCtx) return undefined
 
-    const ctx = new AudioCtx()
-    const master = ctx.createGain()
-    master.gain.value = 0
+    let built = null
+    let keepAlive = null
 
-    const limiter = ctx.createDynamicsCompressor()
-    limiter.threshold.value = -8
-    limiter.knee.value = 0
-    limiter.ratio.value = 20
-    limiter.attack.value = 0.003
-    limiter.release.value = 0.25
-    master.connect(limiter).connect(ctx.destination)
+    function build() {
+      const ctx = new AudioCtx()
+      const master = ctx.createGain()
+      master.gain.value = 0
 
-    const classicBus = ctx.createGain()
-    classicBus.gain.value = 0
-    classicBus.connect(master)
-    const newBus = ctx.createGain()
-    newBus.gain.value = 0
+      const limiter = ctx.createDynamicsCompressor()
+      limiter.threshold.value = -8
+      limiter.knee.value = 0
+      limiter.ratio.value = 20
+      limiter.attack.value = 0.003
+      limiter.release.value = 0.25
+      master.connect(limiter).connect(ctx.destination)
 
-    const cyberHighpass = ctx.createBiquadFilter()
-    cyberHighpass.type = 'highpass'
-    cyberHighpass.frequency.value = 220
-    newBus.connect(cyberHighpass).connect(master)
+      const classicBus = ctx.createGain()
+      classicBus.gain.value = 0
+      classicBus.connect(master)
+      const newBus = ctx.createGain()
+      newBus.gain.value = 0
 
-    const arpIn = ctx.createGain()
-    const echo = ctx.createDelay(1)
-    echo.delayTime.value = (sceneMs / 1000 / BEATS_PER_SCENE) * 0.75
-    const echoFeedback = ctx.createGain()
-    echoFeedback.gain.value = 0.35
-    const echoOut = ctx.createGain()
-    echoOut.gain.value = 0.4
-    arpIn.connect(newBus)
-    arpIn.connect(echo)
-    echo.connect(echoFeedback).connect(echo)
-    echo.connect(echoOut).connect(newBus)
+      const cyberHighpass = ctx.createBiquadFilter()
+      cyberHighpass.type = 'highpass'
+      cyberHighpass.frequency.value = 220
+      newBus.connect(cyberHighpass).connect(master)
 
-    const noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate)
-    const data = noise.getChannelData(0)
-    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1
+      const arpIn = ctx.createGain()
+      const echo = ctx.createDelay(1)
+      echo.delayTime.value = (sceneMs / 1000 / BEATS_PER_SCENE) * 0.75
+      const echoFeedback = ctx.createGain()
+      echoFeedback.gain.value = 0.35
+      const echoOut = ctx.createGain()
+      echoOut.gain.value = 0.4
+      arpIn.connect(newBus)
+      arpIn.connect(echo)
+      echo.connect(echoFeedback).connect(echo)
+      echo.connect(echoOut).connect(newBus)
 
-    const droneFilter = ctx.createBiquadFilter()
-    droneFilter.type = 'lowpass'
-    droneFilter.frequency.value = 380
-    droneFilter.Q.value = 6
-    const droneGain = ctx.createGain()
-    droneGain.gain.value = 0.22
-    droneFilter.connect(droneGain).connect(classicBus)
+      const noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate)
+      const data = noise.getChannelData(0)
+      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1
 
-    const oscs = [55, 55.4, 82.4].map((freq, i) => {
-      const osc = ctx.createOscillator()
-      osc.type = i === 2 ? 'triangle' : 'sawtooth'
-      osc.frequency.value = freq
-      osc.connect(droneFilter)
-      osc.start()
-      return osc
-    })
+      const droneFilter = ctx.createBiquadFilter()
+      droneFilter.type = 'lowpass'
+      droneFilter.frequency.value = 380
+      droneFilter.Q.value = 6
+      const droneGain = ctx.createGain()
+      droneGain.gain.value = 0.22
+      droneFilter.connect(droneGain).connect(classicBus)
 
-    const lfo = ctx.createOscillator()
-    const lfoDepth = ctx.createGain()
-    lfo.frequency.value = 0.08
-    lfoDepth.gain.value = 180
-    lfo.connect(lfoDepth).connect(droneFilter.frequency)
-    lfo.start()
-    oscs.push(lfo)
+      const oscs = [55, 55.4, 82.4].map((freq, i) => {
+        const osc = ctx.createOscillator()
+        osc.type = i === 2 ? 'triangle' : 'sawtooth'
+        osc.frequency.value = freq
+        osc.connect(droneFilter)
+        osc.start()
+        return osc
+      })
 
-    audioRef.current = { ctx, master, noise, classicBus, newBus, arpIn }
+      const lfo = ctx.createOscillator()
+      const lfoDepth = ctx.createGain()
+      lfo.frequency.value = 0.08
+      lfoDepth.gain.value = 180
+      lfo.connect(lfoDepth).connect(droneFilter.frequency)
+      lfo.start()
+      oscs.push(lfo)
+
+      audioRef.current = { ctx, master, noise, classicBus, newBus, arpIn }
+      return { ctx, master, oscs }
+    }
 
     const events = ['pointerdown', 'pointerup', 'mousedown', 'touchend', 'click', 'keydown']
-    const removeUnlock = () => events.forEach((e) => window.removeEventListener(e, unlock))
-    function unlock() {
+    const removeListeners = () => events.forEach((e) => window.removeEventListener(e, onGesture))
+
+    function routeToSpeaker() {
+      try {
+        if (navigator.audioSession) navigator.audioSession.type = 'playback'
+        if (!keepAlive) {
+          keepAlive = new Audio(SILENT_WAV)
+          keepAlive.loop = true
+        }
+        keepAlive.play().catch(() => {})
+      } catch {}
+    }
+
+    function onGesture() {
+      routeToSpeaker()
+      if (!built) built = build()
+      const { ctx, master } = built
       ctx.resume().then(() => {
         if (ctx.state !== 'running') return
         master.gain.setTargetAtTime(MASTER_VOLUME, ctx.currentTime, 0.4)
         setPlaying(true)
-        removeUnlock()
+        removeListeners()
       }).catch(() => {})
     }
-    events.forEach((e) => window.addEventListener(e, unlock, { passive: true }))
-    unlock()
+
+    events.forEach((e) => window.addEventListener(e, onGesture, { passive: true }))
+    if (navigator.userActivation?.hasBeenActive) onGesture()
 
     return () => {
-      removeUnlock()
-      oscs.forEach((o) => o.stop())
-      ctx.close()
+      removeListeners()
+      keepAlive?.pause()
+      if (built) {
+        built.oscs.forEach((o) => o.stop())
+        built.ctx.close()
+      }
       audioRef.current = null
     }
   }, [])
