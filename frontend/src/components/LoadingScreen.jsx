@@ -191,16 +191,6 @@ export default function LoadingScreen({ apiUrl, onDone, onReady }) {
         </div>
       )}
 
-      <div
-        aria-hidden="true"
-        className="loader-corner-hint absolute right-4 top-4 sm:right-6 sm:top-6 flex items-center gap-2 font-mono text-[11px] sm:text-xs tracking-wide text-purple-300/80"
-      >
-        <span className={`loader-eq ${sound.playing ? 'is-playing' : ''}`}>
-          <i /><i /><i /><i />
-        </span>
-        <span>{sound.playing ? 'sound on' : 'tap for sound'}</span>
-      </div>
-
       <div aria-hidden="true" className="flex flex-col items-center">
         <div
           key={`scene-${sceneIndex}`}
