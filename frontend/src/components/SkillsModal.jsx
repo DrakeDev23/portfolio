@@ -4,11 +4,12 @@ import { X } from 'lucide-react'
 
 const SKILL_GROUPS = [
   { id: 'programming', title: 'Programming', items: ['JavaScript', 'TypeScript', 'Python', 'PHP', 'C++', 'SQL', 'Bash'] },
-  { id: 'frontend', title: 'Frontend', items: ['React', 'Vue.js', 'Tailwind CSS', 'HTML5', 'CSS3'] },
-  { id: 'backend', title: 'Backend', items: ['Django', 'Flask', 'FastAPI', 'Laravel', 'Node.js'] },
-  { id: 'databases', title: 'Databases', items: ['PostgreSQL', 'MySQL', 'Supabase', 'Firebase'] },
-  { id: 'devops', title: 'DevOps & Tools', items: ['Git', 'GitHub', 'Docker', 'Postman'] },
-  { id: 'security', title: 'Security Tools', items: ['John the Ripper', 'Nmap', 'Zenmap', 'Wireshark', 'Burp Suite', 'OWASP ZAP', 'GoBuster', 'Hydra'] },
+  { id: 'frontend', title: 'Frontend', items: ['React', 'Vue.js', 'Tailwind CSS', 'HTML5', 'CSS3', 'BootStrap'] },
+  { id: 'Mobile', title: 'Mobile', items: ['React Native', 'Expo']},
+  { id: 'backend', title: 'Backend', items: ['Django', 'Flask', 'FastAPI', 'Laravel', 'ASP.NET'] },
+  { id: 'databases', title: 'Databases', items: ['PostgreSQL', 'MySQL', 'Supabase', 'Firebase', 'Sqlite', 'Redis'] },
+  { id: 'devops', title: 'DevOps & Tools', items: ['Git', 'GitHub', 'Docker', 'Postman', 'AWS'] },
+  { id: 'security', title: 'Security Tools', items: ['John the Ripper', 'Nmap', 'Zenmap', 'Wireshark', 'Burp Suite', 'OWASP ZAP', 'GoBuster', 'Ffuf', 'Hydra', 'Metasploit'] },
 ]
 
 const TABS = [{ id: 'all', title: 'All' }, ...SKILL_GROUPS]
