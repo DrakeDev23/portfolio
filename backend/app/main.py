@@ -53,6 +53,16 @@ app.add_middleware(
 MAX_BODY_SIZE = 16 * 1024
 
 @app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+    response.headers["X-XSS-Protection"] = "0"
+    return response
+
+@app.middleware("http")
 async def limit_body_size(request: Request, call_next):
     content_length = request.headers.get("content-length")
     if content_length is not None:
@@ -63,7 +73,10 @@ async def limit_body_size(request: Request, call_next):
                     content={"detail": "Request body too large."},
                 )
         except ValueError:
-            pass
+            return JSONResponse(
+                status_code=400,
+                content={"detail": "Invalid Content-Length header."},
+            )
     return await call_next(request)
 
 app.state.limiter = limiter

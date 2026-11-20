@@ -3,13 +3,10 @@ import datetime
 import httpx
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, EmailStr, Field, ConfigDict, field_validator
-from slowapi import Limiter
-from slowapi.util import get_remote_address
+from app.core.limiter import limiter
 from app.core.config import settings
 
 router = APIRouter()
-
-limiter = Limiter(key_func=get_remote_address)
 
 NAME_MAX    = 80
 EMAIL_MAX   = 254
@@ -26,18 +23,22 @@ _CTRL_RE    = re.compile(r"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]")
 _LINEBREAK_RE = re.compile(r"[\r\n\t]")
 
 
-def sanitize_line(value: str, max_len: int) -> str:
+def sanitize_line(value: str | None, max_len: int) -> str:
     """For single-line fields: name, subject, email. Strips tags, control chars,
     and any newline/CR/tab to prevent header or template injection."""
+    if not value or not isinstance(value, str):
+        return ""
     value = _TAG_RE.sub("", value)
     value = _CTRL_RE.sub("", value)
     value = _LINEBREAK_RE.sub(" ", value)
     return value.strip()[:max_len]
 
 
-def sanitize_text(value: str, max_len: int) -> str:
+def sanitize_text(value: str | None, max_len: int) -> str:
     """For multi-line fields: message. Strips tags and dangerous control chars
     but preserves \\n for paragraph breaks."""
+    if not value or not isinstance(value, str):
+        return ""
     value = _TAG_RE.sub("", value)
     value = _CTRL_RE.sub("", value)
     value = value.replace("\r\n", "\n").replace("\r", "\n")
@@ -93,6 +94,7 @@ class ContactRequest(BaseModel):
 
 @router.post("")
 @limiter.limit("5/minute")
+@limiter.limit("40/day")
 async def send_contact(request: Request, payload: ContactRequest):
     if payload.website:
         return {"message": "Message sent successfully."}
