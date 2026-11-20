@@ -117,29 +117,39 @@ export function useIntroSound({ sceneIndex, sceneMs, glitch, exiting, fadeOutMs 
       } catch {}
     }
 
+    let starting = false
     function onGesture() {
+      if (starting || built?.ctx?.state === 'running') return
+      starting = true
+
       routeToSpeaker()
       if (!built) built = build()
       const { ctx, master } = built
       ctx.resume().then(() => {
-        if (ctx.state !== 'running') return
-        master.gain.setTargetAtTime(MASTER_VOLUME, ctx.currentTime, 0.4)
-        setPlaying(true)
-        removeListeners()
-      }).catch(() => {})
+        if (ctx.state === 'running') {
+          master.gain.setTargetAtTime(MASTER_VOLUME, ctx.currentTime, 0.4)
+          setPlaying(true)
+          removeListeners()
+        }
+      }).catch(() => {}).finally(() => {
+        starting = false
+      })
     }
 
     events.forEach((e) => window.addEventListener(e, onGesture, { passive: true }))
-    try {
-      onGesture()
-    } catch {}
 
     return () => {
       removeListeners()
       keepAlive?.pause()
       if (built) {
-        built.oscs.forEach((o) => o.stop())
-        built.ctx.close()
+        built.oscs.forEach((o) => {
+          try { o.stop() } catch {}
+        })
+        try {
+          if (built.ctx.state !== 'closed') {
+            built.ctx.close().catch(() => {})
+          }
+        } catch {}
       }
       audioRef.current = null
     }

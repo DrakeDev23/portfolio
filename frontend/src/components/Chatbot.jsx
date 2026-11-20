@@ -130,7 +130,7 @@ export default function Chatbot() {
   }, [open])
 
   const send = async () => {
-    const q = input.trim()
+    const q = input.trim().slice(0, MESSAGE_MAX)
     if (!q || typing) return
 
     const userMsg = { id: Date.now(), role: 'user', text: q }
@@ -266,7 +266,7 @@ export default function Chatbot() {
           </div>
 
           <div
-            className="p-3 flex flex-col gap-1.5 flex-shrink-0"
+            className="p-3 flex flex-col gap-1 flex-shrink-0"
             style={{ borderTop: '1px solid rgba(122,51,255,0.15)' }}
           >
             <div className="flex gap-2">
@@ -314,17 +314,27 @@ export default function Chatbot() {
                 <Send size={14} />
               </button>
             </div>
-            {input.length > MESSAGE_MAX * 0.9 && (
+            <div className="flex justify-end items-center h-3.5 px-0.5" aria-hidden={input.length === 0}>
               <span
                 style={{
                   fontSize: '10px',
-                  color: input.length >= MESSAGE_MAX ? '#f87171' : '#9ca3af',
+                  color:
+                    input.length >= MESSAGE_MAX
+                      ? '#f87171'
+                      : input.length >= MESSAGE_MAX * 0.8
+                      ? '#fbbf24'
+                      : '#9ca3af',
                   textAlign: 'right',
+                  fontVariantNumeric: 'tabular-nums',
+                  opacity: input.length > 0 ? 1 : 0,
+                  visibility: input.length > 0 ? 'visible' : 'hidden',
+                  transition: 'opacity 0.15s ease, color 0.15s ease',
                 }}
+                aria-live="polite"
               >
-                {input.length}/{MESSAGE_MAX}
+                {input.length} / {MESSAGE_MAX}
               </span>
-            )}
+            </div>
           </div>
         </div>
       )}

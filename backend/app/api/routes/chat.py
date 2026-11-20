@@ -20,7 +20,9 @@ _TAG_RE  = re.compile(r"<[^>]*>")
 _CTRL_RE = re.compile(r"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]")
 
 
-def sanitize_text(value: str, max_len: int) -> str:
+def sanitize_text(value: str | None, max_len: int) -> str:
+    if not value or not isinstance(value, str):
+        return ""
     value = _TAG_RE.sub("", value)
     value = _CTRL_RE.sub("", value)
     return value.strip()[:max_len]
@@ -37,6 +39,10 @@ Conversation style:
 - Match the visitor's energy. A greeting like "hi" or "hello" gets a short,
   warm greeting back (e.g. "Hey! Welcome to Drake's portfolio — ask me anything
   about his projects, skills, or background."), NOT a full biography dump.
+- Handle pleasantries, apologies, or casual remarks (e.g. "sorry", "thank you",
+  "thanks", "cool", "ok") warmly and conversationally in 1-2 sentences (e.g. "No worries at all!
+  How can I help you explore Drake's projects, skills, or background?"),
+  gently guiding the visitor back to the portfolio.
 - Don't repeat Drake's whole background in every reply. Only share the specific
   details relevant to what was asked.
 - Vary your phrasing — don't reuse the same sentences or structure every time.
@@ -128,7 +134,7 @@ async def chat(request: Request, payload: ChatRequest, db: AsyncSession = Depend
 
     body = {
         "messages": messages,
-        "max_tokens": 256,
+        "max_tokens": 1024,
         "temperature": 0.6,
         "model": model,
     }
@@ -180,11 +186,15 @@ async def chat(request: Request, payload: ChatRequest, db: AsyncSession = Depend
     data = resp.json()
 
     try:
-        choices = data["choices"]
+        choices = data.get("choices") or []
         if not choices:
             raise KeyError("no choices")
-        text = choices[0]["message"]["content"]
-    except (KeyError, IndexError):
+        message = choices[0].get("message") or {}
+        text = message.get("content") or message.get("refusal") or ""
+    except (KeyError, IndexError, AttributeError):
+        text = ""
+
+    if not text:
         finish_reason = (
             data.get("choices", [{}])[0].get("finish_reason")
             if data.get("choices")
