@@ -3,8 +3,8 @@ import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 
 const SKILL_GROUPS = [
-  { id: 'programming', title: 'Programming', items: ['JavaScript', 'TypeScript', 'Python', 'PHP', 'C++', 'SQL', 'Bash'] },
-  { id: 'frontend', title: 'Frontend', items: ['React', 'Vue.js', 'Tailwind CSS', 'HTML5', 'CSS3', 'BootStrap'] },
+  { id: 'programming', title: 'Programming', items: ['TypeScript', 'Python', 'PHP', 'C', 'Java', 'C#', 'C++', 'SQL', 'Bash'] },
+  { id: 'frontend', title: 'Frontend', items: ['React js', 'Vue.js', 'Tailwind CSS', 'HTML5', 'CSS3', 'JavaScript', 'BootStrap'] },
   { id: 'Mobile', title: 'Mobile', items: ['React Native', 'Expo']},
   { id: 'backend', title: 'Backend', items: ['Django', 'Flask', 'FastAPI', 'Laravel', 'ASP.NET'] },
   { id: 'databases', title: 'Databases', items: ['PostgreSQL', 'MySQL', 'Supabase', 'Firebase', 'Sqlite', 'Redis'] },
