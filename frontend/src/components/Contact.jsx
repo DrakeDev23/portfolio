@@ -146,7 +146,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="py-28 relative"
+      className="py-28 relative overflow-hidden"
       style={{ backgroundColor: '#090514' }}
     >
       <div

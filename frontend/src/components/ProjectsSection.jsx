@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useLayoutEffect, useMemo, useCallback, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { usePortfolioData } from '../context/PortfolioContext'
 import { PROJECTS_DATA } from '../constants/projectsData'
@@ -69,6 +69,21 @@ export default function ProjectsSection() {
 
   const visible = expanded ? filtered : filtered.slice(0, INITIAL_VISIBLE)
   const hasMore = filtered.length > INITIAL_VISIBLE
+
+  const toggleRef = useRef(null)
+  const toggleTopBefore = useRef(null)
+
+  const handleToggle = useCallback(() => {
+    if (expanded) toggleTopBefore.current = toggleRef.current?.getBoundingClientRect().top ?? null
+    setExpanded((v) => !v)
+  }, [expanded])
+
+  useLayoutEffect(() => {
+    if (expanded || toggleTopBefore.current == null || !toggleRef.current) return
+    const shift = toggleRef.current.getBoundingClientRect().top - toggleTopBefore.current
+    toggleTopBefore.current = null
+    if (shift) window.scrollBy({ top: shift, behavior: 'instant' })
+  }, [expanded])
 
   const handleFilter = useCallback((key) => {
     setActiveFilter(key)
@@ -171,8 +186,10 @@ export default function ProjectsSection() {
         {hasMore && (
           <div className="mt-10 text-center">
             <button
+              ref={toggleRef}
               type="button"
-              onClick={() => setExpanded((v) => !v)}
+              aria-expanded={expanded}
+              onClick={handleToggle}
               className="inline-flex items-center rounded-lg border border-white/15 px-5 py-2.5 text-sm font-medium text-gray-200 transition-colors hover:border-[#7A33FF]/50 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7A33FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#090514]"
             >
               {expanded ? 'Show less' : `Show all ${filtered.length} projects`}

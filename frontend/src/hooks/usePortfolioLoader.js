@@ -53,7 +53,6 @@ export function usePortfolioLoader() {
     setIsSlow(false)
     ctxRef.current = {}
 
-    // Flag slow connection if Render cold start takes longer than 3.5s
     if (slowTimerRef.current) clearTimeout(slowTimerRef.current)
     slowTimerRef.current = setTimeout(() => {
       setIsSlow(true)
@@ -61,12 +60,10 @@ export function usePortfolioLoader() {
     }, 3500)
 
     try {
-      // 1. Try single round-trip bootstrap endpoint first
       let bootstrapData = null
       try {
         bootstrapData = await portfolioApi.bootstrap()
       } catch {
-        // Fallback to parallel requests if bootstrap endpoint is not available
       }
 
       if (bootstrapData && bootstrapData.status) {
@@ -111,7 +108,6 @@ export function usePortfolioLoader() {
         return finalData
       }
 
-      // 2. Parallel fetch if bootstrap is unavailable
       setStatus('Fetching portfolio modules in parallel...')
       setProgress(25)
 

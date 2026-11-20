@@ -82,19 +82,12 @@ export default function Events() {
     <section
       id="events"
       className="py-16 md:py-24 relative overflow-hidden"
-      style={{ backgroundColor: '#090514' }}
+      style={{ backgroundColor: '#07051a' }}
     >
       <div
         className="absolute top-0 left-0 right-0 h-px"
         style={{
           background: 'linear-gradient(90deg, transparent, rgba(122,51,255,0.35), transparent)',
-        }}
-      />
-
-      <div
-        className="absolute left-1/2 top-1/3 -translate-x-1/2 w-[600px] h-[600px] rounded-full pointer-events-none blur-3xl"
-        style={{
-          background: 'radial-gradient(circle, rgba(122,51,255,0.08) 0%, transparent 70%)',
         }}
       />
 
