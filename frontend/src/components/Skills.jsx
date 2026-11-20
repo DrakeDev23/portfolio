@@ -1,28 +1,31 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
-import { Terminal } from 'lucide-react'
+import { Cloud, Database, Terminal } from 'lucide-react'
 import SkillsModal from './SkillsModal'
 import {
-  SiCplusplus, SiCss, SiDjango, SiDocker, SiFastapi, SiFigma, SiFirebase, SiFlask, SiGit, SiGithub,
-  SiHtml5, SiJavascript, SiLaravel, SiMysql, SiPhp, SiPostgresql, SiPostman, SiPython, SiReact, SiRedis,
-  SiSupabase, SiTailwindcss, SiTypescript, SiVuedotjs,
+  SiBootstrap, SiCplusplus, SiCss, SiDjango, SiDocker, SiDotnet, SiExpo, SiFastapi, SiFirebase, SiFlask,
+  SiGit, SiGithub, SiGnubash, SiHtml5, SiJavascript, SiLaravel, SiMysql, SiPhp, SiPostgresql, SiPostman,
+  SiPython, SiReact, SiRedis, SiSqlite, SiSupabase, SiTailwindcss, SiTypescript, SiVuedotjs,
 } from 'react-icons/si'
 
 const ICONS = {
-  Python: [SiPython, '#3776AB'], React: [SiReact, '#61DAFB'], Docker: [SiDocker, '#2496ED'],
-  Git: [SiGit, '#F05032'], PostgreSQL: [SiPostgresql, '#4169E1'], Laravel: [SiLaravel, '#FF2D20'],
-  JavaScript: [SiJavascript, '#F7DF1E'], TypeScript: [SiTypescript, '#3178C6'], Django: [SiDjango, '#44B78B'],
-  Redis: [SiRedis, '#FF4438'], Figma: [SiFigma, '#F24E1E'], Vue: [SiVuedotjs, '#4FC08D'],
-  PHP: [SiPhp, '#777BB4'], 'Tailwind CSS': [SiTailwindcss, '#06B6D4'], FastAPI: [SiFastapi, '#009688'],
-  MySQL: [SiMysql, '#4479A1'], GitHub: [SiGithub, '#FFFFFF'], Flask: [SiFlask, '#FFFFFF'],
-  'C++': [SiCplusplus, '#659AD2'], HTML5: [SiHtml5, '#E34F26'], CSS: [SiCss, '#1572B6'],
-  Firebase: [SiFirebase, '#FFCA28'], Supabase: [SiSupabase, '#3FCF8E'], Postman: [SiPostman, '#FF6C37'],
+  JavaScript: [SiJavascript, '#F7DF1E'], TypeScript: [SiTypescript, '#3178C6'], Python: [SiPython, '#3776AB'],
+  PHP: [SiPhp, '#777BB4'], 'C++': [SiCplusplus, '#659AD2'], SQL: [Database, '#38BDF8'], Bash: [SiGnubash, '#4EAA25'],
+  React: [SiReact, '#61DAFB'], 'Vue.js': [SiVuedotjs, '#4FC08D'], 'Tailwind CSS': [SiTailwindcss, '#06B6D4'],
+  HTML5: [SiHtml5, '#E34F26'], CSS3: [SiCss, '#1572B6'], BootStrap: [SiBootstrap, '#7952B3'],
+  'React Native': [SiReact, '#61DAFB'], Expo: [SiExpo, '#FFFFFF'],
+  Django: [SiDjango, '#44B78B'], Flask: [SiFlask, '#FFFFFF'], FastAPI: [SiFastapi, '#009688'],
+  Laravel: [SiLaravel, '#FF2D20'], 'ASP.NET': [SiDotnet, '#512BD4'],
+  PostgreSQL: [SiPostgresql, '#4169E1'], MySQL: [SiMysql, '#4479A1'], Supabase: [SiSupabase, '#3FCF8E'],
+  Firebase: [SiFirebase, '#FFCA28'], Sqlite: [SiSqlite, '#59A9D8'], Redis: [SiRedis, '#FF4438'],
+  Git: [SiGit, '#F05032'], GitHub: [SiGithub, '#FFFFFF'], Docker: [SiDocker, '#2496ED'],
+  Postman: [SiPostman, '#FF6C37'], AWS: [Cloud, '#FF9900'],
 }
 
 const COLUMN_DATA = [
-  ['Python', 'React', 'Docker', 'Git', 'PostgreSQL', 'Laravel'],
-  ['JavaScript', 'TypeScript', 'Django', 'Redis', 'Figma', 'Vue'],
-  ['PHP', 'Tailwind CSS', 'FastAPI', 'MySQL', 'GitHub', 'Flask'],
-  ['C++', 'HTML5', 'CSS', 'Firebase', 'Supabase', 'Postman'],
+  ['JavaScript', 'TypeScript', 'Python', 'PHP', 'C++', 'SQL', 'Bash', 'AWS'],
+  ['React', 'Vue.js', 'Tailwind CSS', 'HTML5', 'CSS3', 'BootStrap', 'React Native', 'Expo'],
+  ['Django', 'Flask', 'FastAPI', 'Laravel', 'ASP.NET', 'Git', 'GitHub', 'Docker'],
+  ['PostgreSQL', 'MySQL', 'Supabase', 'Firebase', 'Sqlite', 'Redis', 'Postman'],
 ]
 
 const SECURITY_TOOLS = ["Nmap", "Zenmap", "Wireshark", "Burp Suite", "OWASP ZAP", "GoBuster", "FFUF", "SQLMap", "Metasploit", "Hydra", "John the Ripper"];
