@@ -20,9 +20,20 @@ const getLikedSet = () => {
   }
 }
 
+const prioritizeProjects = (items) => {
+  if (!Array.isArray(items)) return items
+  const list = [...items]
+  const idx = list.findIndex((p) => p.id === 'stupdt')
+  if (idx > 0) {
+    const [target] = list.splice(idx, 1)
+    list.unshift(target)
+  }
+  return list
+}
+
 export default function ProjectsSection() {
   const prefetched = usePortfolioData()
-  const initialProjects = prefetched?.projects?.length ? prefetched.projects : PROJECTS_DATA
+  const initialProjects = prefetched?.projects?.length ? prioritizeProjects(prefetched.projects) : PROJECTS_DATA
 
   const [projects, setProjects] = useState(initialProjects)
   const [activeFilter, setActiveFilter] = useState(ALL)
@@ -34,14 +45,14 @@ export default function ProjectsSection() {
 
   useEffect(() => {
     if (prefetched?.projects?.length) {
-      setProjects(prefetched.projects)
+      setProjects(prioritizeProjects(prefetched.projects))
       return
     }
     let cancelled = false
     fetch(`${apiUrl}/api/projects`)
       .then((r) => r.json())
       .then((data) => {
-        if (!cancelled && Array.isArray(data) && data.length > 0) setProjects(data)
+        if (!cancelled && Array.isArray(data) && data.length > 0) setProjects(prioritizeProjects(data))
       })
       .catch(() => {})
     return () => {

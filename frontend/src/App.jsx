@@ -16,8 +16,8 @@ import { PortfolioProvider } from './context/PortfolioContext'
 import { portfolioApi } from './api/portfolioApi'
 import { FALLBACK_PORTFOLIO_DATA } from './constants/fallbackData'
 
-const SESSION_KEY = 'portfolio_initialized_v5'
-const DATA_KEY = 'portfolio_data_v5'
+const SESSION_KEY = 'portfolio_initialized_v6'
+const DATA_KEY = 'portfolio_data_v6'
 const BOOTSTRAP_TIMEOUT_MS = 10000
 
 async function fetchPortfolioData() {

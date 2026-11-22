@@ -1,5 +1,15 @@
 export const PROJECTS_DATA = [
   {
+    id: 'stupdt',
+    title: 'StuPDT',
+    subtitle: 'An AI-Powered Frustrating User Experience',
+    desc: "StuPDT is a satirical web application that uses AI to create intentionally frustrating and rage-inducing user experiences. It turns simple interactions into unnecessarily complicated challenges, such as triggering CAPTCHAs when switching to dark mode or introducing unexpected obstacles to everyday actions. Through AI integration, the platform generates unpredictable rage-bait interactions designed to test users' patience and demonstrate how frustrating bad user experiences can be.",
+    tags: ['React js', 'FastAPI', 'SQLAlchemy', 'PostgreSQL', 'Tailwindcss', 'Docker', 'Groq', 'Gemini', 'Pydantic'],
+    color: '#3b82f6',
+    image: '/assets/images/projects/stupdt.jpeg',
+    likes: 0,
+  },
+  {
     id: 'awscc-flurry',
     title: 'AWS Skill Builder',
     subtitle: 'Org Project',
@@ -148,5 +158,5 @@ export const PROJECTS_DATA = [
     color: '#22c55e',
     image: '/assets/images/projects/worthout.jpeg',
     likes: 0,
-  },
+  }
 ]
