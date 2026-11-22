@@ -23,14 +23,19 @@ export default function EventsCarousel({ events = EVENTS_DATA, className = '' })
   }, [])
 
   useEffect(() => {
-    if (activeEventIndex !== undefined && activeEventIndex !== activeIndex) setActiveIndex(activeEventIndex)
-  }, [activeEventIndex, activeIndex])
+    if (activeEventIndex !== undefined && activeEventIndex !== activeIndex) {
+      setActiveIndex(activeEventIndex)
+    }
+  }, [activeEventIndex])
+
+  useEffect(() => {
+    setActiveEventIndex?.(activeIndex)
+  }, [activeIndex, setActiveEventIndex])
 
   const changeActive = useCallback((index) => {
     const next = (index + total) % total
     setActiveIndex(next)
-    setActiveEventIndex?.(next)
-  }, [setActiveEventIndex, total])
+  }, [total])
   const handleNext = useCallback(() => changeActive(activeIndex + 1), [activeIndex, changeActive])
   const handlePrev = useCallback(() => changeActive(activeIndex - 1), [activeIndex, changeActive])
 
@@ -38,14 +43,10 @@ export default function EventsCarousel({ events = EVENTS_DATA, className = '' })
     const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
     if (isPaused || reducedMotion || total < 2) return undefined
     const timer = window.setInterval(() => {
-      setActiveIndex((current) => {
-        const next = (current + 1) % total
-        setActiveEventIndex?.(next)
-        return next
-      })
+      setActiveIndex((current) => (current + 1) % total)
     }, 4500)
     return () => window.clearInterval(timer)
-  }, [isPaused, setActiveEventIndex, total])
+  }, [isPaused, total])
   const handleCardClick = (index) => {
     if (index !== activeIndex) return changeActive(index)
     setSelectedEventIndex(index)

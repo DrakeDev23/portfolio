@@ -13,6 +13,7 @@ import baiImg from '../assets/images/projects/bAI.jpeg'
 import hulmaImg from '../assets/images/projects/hulma.jpeg'
 import agenticaImg from '../assets/images/projects/agentica.jpeg'
 import worthoutImg from '../assets/images/projects/worthout.jpeg'
+import stupdt from '../assets/images/projects/stupdt.jpeg'
 
 export const PROJECT_IMAGES = {
   'awscc-flurry': awsImg,
@@ -30,6 +31,7 @@ export const PROJECT_IMAGES = {
   hulma: hulmaImg,
   agentica: agenticaImg,
   worthout: worthoutImg,
+  stupdt: stupdt
 }
 
 export const getProjectImage = (id) => PROJECT_IMAGES[id] ?? null

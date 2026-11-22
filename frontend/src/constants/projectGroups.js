@@ -16,6 +16,7 @@ export const PROJECT_GROUPS = {
   smp: 'Personal',
   worthout: 'Personal',
   'awscc-flurry': 'Org projects',
+  stupdt: 'Hackathons / Competition',
 }
 
 export const getGroup = (id) => PROJECT_GROUPS[id] ?? null
