@@ -122,6 +122,10 @@ const CERTIFICATES = [
     title: 'Exploring career paths in the AI space',
     subtitle: 'AI and career summit · Seminar',
   },
+  {
+    title: 'MALFUNCTION Hackathon',
+    subtitle: 'MALFUNCTION · Certificate of Participation',
+  },
 ]
 
 function FlipCard({ title, icon: Icon, description, tools }) {

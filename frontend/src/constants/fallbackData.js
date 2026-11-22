@@ -121,6 +121,13 @@ export const FALLBACK_CERTIFICATIONS = [
     type: 'AI Seminar',
     status: 'completed',
   },
+  {
+    id: 'stupdt',
+    name: 'MALFUNCTION Hackathon',
+    issuer: 'MALFUNCTION Hackathon',
+    type: 'Certificate of Participation',
+    status: 'completed',
+  },
 ]
 
 export const FALLBACK_PORTFOLIO_DATA = {
