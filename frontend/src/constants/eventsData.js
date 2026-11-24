@@ -303,6 +303,20 @@ export const EVENTS_DATA = [
     date: 'October 17, 2026',
     image: '/assets/images/events/owasp.jpeg',
   },
+  {
+    id: 'malfunction',
+    title: 'Malfunction Hackathon',
+    name: 'Malfunction Hackathon',
+    badge: 'Participant',
+    rank: 'PARTICIPANT',
+    achievement: 'Participant',
+    role: 'Backend Developer',
+    description: 'An AI-focused hackathon centered on building systems that are genuinely useful yet intentionally annoying. Participants explored creative AI integration, rapid prototyping, and unconventional problem-solving to develop functional solutions.',
+    desc: 'Participated in Malfunction Hackathon 2026 as a Backend Developer, contributing to the development of an AI-integrated system designed to be useful yet intentionally annoying.',
+    location: 'iACADEMY Cebu, 5th Floor, Filinvest Cyberzone Tower 2',
+    date: 'November 21, 2026',
+    image: '/assets/images/events/malfunction.png',
+  },
 ]
 
 export default EVENTS_DATA
