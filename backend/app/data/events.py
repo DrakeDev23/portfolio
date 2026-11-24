@@ -176,5 +176,13 @@ EVENTS = [
         "date": "October 25, 2026",
         "achievement": "champion",
         "desc": "We were crowned **Best Overall Project Champion at Cebu Hacktoberfest 2026**, an open-source hackathon where we collaborated to build an innovative project with AI integration. Through teamwork, creativity, and dedication, we developed a solution that contributes to the open-source community while showcasing how artificial intelligence can enhance software development. This achievement reflects our commitment to innovation, collaboration, and building technology that makes a difference."
+    },
+    {
+        "id": "malfunction",
+        "name": "Malfunction Hackathon",
+        "location": "iACADEMY Cebu, 5th Floor, Filinvest Cyberzone Tower 2",
+        "date": "November 21, 2026",
+        "achievement": "Participant",
+        "desc": "Participated in Malfunction Hackathon 2026, developing an AI-integrated system designed around the concept of being useful yet intentionally annoying. Explored creative AI applications, rapid prototyping, and problem-solving while collaborating with fellow developers to turn an unconventional idea into a functional solution."
     }
 ]
